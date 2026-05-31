@@ -1,0 +1,60 @@
+<table id="product-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên Đồ Chơi</th>
+            <th>Giá</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody id="product-list">
+        </tbody>
+</table>
+
+<script>
+    const API_URL = "http://127.0.0.1:5000/api/g4_products"; // Link API Flask của bạn
+
+    // 1. READ: Lấy danh sách sản phẩm hiển thị lên giao diện
+    async function loadProducts() {
+        try {
+            const response = await fetch(API_URL);
+            const products = await response.json();
+            
+            let html = '';
+            products.forEach(prod => {
+                html += `
+                    <tr>
+                        <td>${prod.G4_ProductID}</td>
+                        <td>${prod.G4_ProductName}</td>
+                        <td>${prod.G4_Price}đ</td>
+                        <td>
+                            <button onclick="editProduct(${prod.G4_ProductID})">Sửa</button>
+                            <button onclick="deleteProduct(${prod.G4_ProductID})">Xóa</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('product-list').innerHTML = html;
+        } catch (error) {
+            console.error("Lỗi khi tải sản phẩm:", error);
+        }
+    }
+
+    // 2. DELETE: Xóa một sản phẩm
+    async function deleteProduct(id) {
+        if (confirm("Bạn có chắc chắn muốn xóa đồ chơi này không?")) {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert("Xóa thành công!");
+                    loadProducts(); // Tải lại danh sách sau khi xóa
+                }
+            } catch (error) {
+                console.error("Lỗi khi xóa:", error);
+            }
+        }
+    }
+
+    // Tự động chạy hàm load danh sách khi mở trang
+    window.onload = loadProducts;
+</script>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Người Dùng - G4 Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary-admin: #2c3e50;
+            --accent-admin: #34495e;
+            --active-color: #3498db;
+            --text-light: #ecf0f1;
+            --bg-body: #f8f9fa;
+            --white: #ffffff;
+            --text-dark: #333333;
+            --danger: #e74c3c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
+        body { background-color: var(--bg-body); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+        /* SIDEBAR STRUCTURE */
+        .sidebar { width: var(--sidebar-width); background-color: var(--primary-admin); color: var(--text-light); position: fixed; top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-brand { padding: 24px; text-align: center; font-size: 1.4rem; font-weight: 700; border-bottom: 1px solid rgba(255, 255, 255, 0.1); background-color: #1a252f; }
+        .sidebar-menu { list-style: none; padding: 20px 0; flex-grow: 1; }
+        .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 15px 25px; color: #bdc3c7; text-decoration: none; font-weight: 600; transition: all 0.3s; }
+        .sidebar-menu li.active a, .sidebar-menu a:hover { color: var(--white); background-color: var(--accent-admin); border-left: 4px solid var(--active-color); padding-left: 21px; }
+        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .btn-logout { display: block; text-align: center; padding: 10px; background-color: var(--danger); color: var(--white); border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+
+        /* MAIN CONTENT */
+        .main-wrapper { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); display: flex; flex-direction: column; }
+        .topbar { height: 70px; background-color: var(--white); box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; padding: 0 30px; }
+        .content-body { padding: 30px; }
+
+        /* TABLE */
+        .table-section { background-color: var(--white); padding: 25px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .data-table th, .data-table td { padding: 14px; border-bottom: 1px solid #eee; }
+        .data-table th { background-color: #f8f9fa; color: #555; font-weight: 700; }
+
+        .role-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; }
+        .role-badge.admin { background-color: #eaf2f8; color: #2980b9; }
+        .role-badge.customer { background-color: #f4ecf7; color: #8e44ad; }
+
+        .btn-lock { padding: 6px 12px; background-color: #fdedec; color: var(--danger); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-lock:hover { background-color: var(--danger); color: white; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">⚙️ G4 TOYSTORE</div>
+        <ul class="sidebar-menu">
+            <li><a href="dashboard.html">📊 Tổng quan Dashboard</a></li>
+            <li><a href="products-management.html">🧱 Quản lý sản phẩm</a></li>
+            <li><a href="orders-management.html">📦 Quản lý đơn hàng</a></li>
+            <li class="active"><a href="users-management.html">👥 Quản lý người dùng</a></li>
+            <li><a href="../user/home.html" target="_blank">🌐 Xem trang chủ User</a></li>
+        </ul>
+        <div class="sidebar-footer"><a href="../user/login.html" class="btn-logout">Đăng xuất ↩</a></div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="page-title"><h2>Quản Lý Tài Khoản Thành Viên</h2></div>
+        </header>
+
+        <main class="content-body">
+            <div class="table-section">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID User</th>
+                            <th>Tên Tài Khoản</th>
+                            <th>Email Liên Hệ</th>
+                            <th>Vai Trò</th>
+                            <th>Ngày Đăng Ký</th>
+                            <th>Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>#U001</b></td>
+                            <td>admin_g4</td>
+                            <td>admin@g4toystore.com</td>
+                            <td><span class="role-badge admin">Quản trị viên</span></td>
+                            <td>01/01/2026</td>
+                            <td><button class="btn-lock" style="opacity:0.5; cursor:not-allowed;" disabled>Không thể khóa</button></td>
+                        </tr>
+                        <tr>
+                            <td><b>#U002</b></td>
+                            <td>nguyen_van_a</td>
+                            <td>vana@gmail.com</td>
+                            <td><span class="role-badge customer">Khách hàng</span></td>
+                            <td>12/03/2026</td>
+                            <td><button class="btn-lock" onclick="confirm('Bạn có chắc chắn muốn khóa tài khoản này?')">Khóa tài khoản</button></td>
+                        </tr>
+                        <tr>
+                            <td><b>#U003</b></td>
+                            <td>tranthib</td>
+                            <td>b_tran@gmail.com</td>
+                            <td><span class="role-badge customer">Khách hàng</span></td>
+                            <td>18/05/2026</td>
+                            <td><button class="btn-lock" onclick="confirm('Bạn có chắc chắn muốn khóa tài khoản này?')">Khóa tài khoản</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>

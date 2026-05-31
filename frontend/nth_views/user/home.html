@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ - G4 ToyStore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS Cơ bản */
+        :root {
+            --primary-color: #ff6b6b;
+            /* Đỏ san hô */
+            --secondary-color: #4ecdc4;
+            /* Xanh mint */
+            --text-color: #333333;
+            --bg-light: #f5f7fa;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- HEADER TOP --- */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 400px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: var(--white);
+            border: 2px solid var(--secondary-color);
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: #38b2ac;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-login {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-cart {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn-cart:hover {
+            background-color: #ee5253;
+        }
+
+        /* --- NAVBAR CHÍNH --- */
+        .main-nav {
+            background-color: #2c3e50;
+            padding: 0 50px;
+        }
+
+        .nav-list {
+            display: flex;
+            list-style: none;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-item>a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 10px;
+            color: var(--white);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-item>a i.fa-chevron-down {
+            font-size: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover>a i.fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-item:hover>a {
+            color: var(--secondary-color);
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: var(--white);
+            min-width: 220px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 0 0 10px 10px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .nav-item:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown li {
+            list-style: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .dropdown li:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-color);
+            transition: background 0.3s, color 0.3s, padding-left 0.3s;
+        }
+
+        .dropdown a:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            padding-left: 25px;
+        }
+
+        /* --- SLIDER --- */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            overflow: hidden;
+            background-color: #e0e0e0;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .slide-content h2 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+            font-weight: 700;
+        }
+
+        .slide-content p {
+            font-size: 1.3rem;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .slider-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-prev {
+            left: 20px;
+        }
+
+        .btn-next {
+            right: 20px;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: var(--primary-color);
+            width: 30px;
+            border-radius: 10px;
+        }
+
+        /* --- CATEGORIES & PRODUCT SLIDER --- */
+        .main-content {
+            padding: 60px 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
+        .categories-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            padding: 20px 0;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-block {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .cat-icon {
+            font-size: 2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+        }
+
+        .bg-1 {
+            background-color: #ffeaa7;
+        }
+
+        .bg-2 {
+            background-color: #ffcbdf;
+        }
+
+        .bg-3 {
+            background-color: #dff9fb;
+        }
+
+        .bg-4 {
+            background-color: #ffbe76;
+        }
+
+        .cat-text h3 {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .cat-text p {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .products-horizontal-slider {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 10px 5px;
+            scrollbar-width: none;
+        }
+
+        .products-horizontal-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* --- SỬA CSS TẠI ĐÂY ĐỂ ẢNH TRÀN VIỀN ĐẸP --- */
+        .product-card {
+            min-width: 260px;
+            background-color: #f8f9fa;
+            border: 2px solid #f1f2f6;
+            border-radius: 15px;
+            padding: 0 0 20px 0; /* Bỏ padding trên và hai bên để ảnh tràn viền, chỉ giữ padding dưới */
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+            overflow: hidden; /* Cực kỳ quan trọng: Giúp ảnh không bị đè vỡ góc bo tròn của thẻ bọc */
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: #4ecdc4;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px; /* Tăng chiều cao lên một chút cho cân đối với ảnh tràn viền */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 3rem;
+            overflow: hidden;
+            background-color: #eaeaea; /* Tạo nền nhẹ trong lúc đợi ảnh tải */
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Chuyển thành 'cover' để ảnh phủ kín hoàn toàn khung viền */
+            pointer-events: none;
+        }
+
+        /* Thêm padding hai bên cho chữ để không bị dính sát lề viền */
+        .product-name {
+            font-size: 1rem;
+            color: #2f3542;
+            font-weight: 600;
+            margin-bottom: 8px;
+            padding: 0 15px;
+        }
+
+        .product-price {
+            color: #ff6b6b;
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 0 15px;
+        }
+
+        .old-price {
+            font-size: 0.85rem;
+            color: #a4b0be;
+            text-decoration: line-through;
+            margin-left: 8px;
+            font-weight: 400;
+        }
+
+        /* --- BỘ ĐIỀU KHIỂN SCROLL VƯƠNG MIỆN MỚI --- */
+        .g4-scroll-controller {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            padding: 10px 0;
+        }
+
+        .g4-scrollbar-track {
+            position: relative;
+            width: 250px;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .g4-scrollbar-thumb {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 35px;
+            height: 35px;
+            background-color: #f1c40f;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            cursor: grab;
+            transition: background-color 0.2s, transform 0.1s;
+            user-select: none;
+            z-index: 5;
+            overflow: hidden;
+        }
+
+        .g4-scrollbar-thumb:active {
+            cursor: grabbing;
+            background-color: #e67e22;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .g4-scrollbar-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- FOOTER --- */
+        .site-footer {
+            background-color: #2c3e50;
+            color: var(--white);
+            padding: 60px 50px 30px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-section p {
+            margin-bottom: 10px;
+            color: #bdc3c7;
+        }
+
+        .blog-list li {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .blog-list a {
+            color: #bdc3c7;
+            transition: color 0.3s;
+            display: block;
+        }
+
+        .blog-list a:hover {
+            color: var(--primary-color);
+        }
+
+        .blog-date {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 576px) {
+            .slider-container {
+                height: 300px;
+            }
+
+            .slide-content h2 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 30px 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header-top">
+        <div class="logo">
+            <a href="home.html">
+                <h1>🧸 G4 ToyStore</h1>
+            </a>
+        </div>
+
+        <form class="search-bar" action="#">
+            <input type="text" placeholder="Tìm kiếm đồ chơi, thương hiệu...">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Tìm</button>
+        </form>
+
+        <div class="header-actions">
+            <a href="login.html" class="btn-action btn-login"><i class="fa-regular fa-user"></i> Đăng Nhập</a>
+            <a href="cart.html" class="btn-action btn-cart"><i class="fa-solid fa-cart-shopping"></i> Giỏ Hàng (0)</a>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="home.html"><i class="fa-solid fa-house"></i> Trang Chủ</a></li>
+            <li class="nav-item">
+                <a href="#"><i class="fa-solid fa-cubes"></i> Sản Phẩm <i class="fa-solid fa-chevron-down"></i></a>
+                <ul class="dropdown">
+                    <li><a href="products.html?cat=lap-rap">Đồ chơi lắp ráp</a></li>
+                    <li><a href="products.html?cat=bup-be">Búp bê & Phụ kiện</a></li>
+                    <li><a href="products.html?cat=thong-minh">Đồ chơi thông minh</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a href="#"><i class="fa-solid fa-tags"></i> Thương Hiệu <i class="fa-solid fa-chevron-down"></i></a>
+                <ul class="dropdown">
+                    <li><a href="brands.html?b=lego">LEGO</a></li>
+                    <li><a href="brands.html?b=hotwheels">Hot Wheels</a></li>
+                    <li><a href="brands.html?b=mylittlepony">My Little Pony</a></li>
+                    <li><a href="brands.html?b=bandai">Bandai</a></li>
+                </ul>
+            </li>
+            <li class="nav-item" style="margin-left: auto;">
+                <a href="../admin/dashboard.html" style="color: #ffdd59; font-weight: 700;"><i class="fa-solid fa-gear"></i></a>
+            </li>
+        </ul>
+    </nav>
+
+    <section class="slider-container">
+        <button class="slider-btn btn-prev" onclick="moveSlide(-1)">❮</button>
+
+        <div class="slider-wrapper" id="sliderWrapper">
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Banner 1">
+                <div class="slide-content">
+                    <h2>Thế Giới Đồ Chơi G4</h2>
+                    <p>Nơi khơi nguồn sáng tạo và chắp cánh ước mơ cho bé yêu</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Banner 2">
+                <div class="slide-content">
+                    <h2>Sáng Tạo Cùng LEGO</h2>
+                    <p>Giảm giá lên đến 35% cho các bộ lắp ráp tư duy duy nhất tháng này</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1558060370-d644479cb6f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" alt="Banner 3">
+                <div class="slide-content">
+                    <h2>Quà To Giá Nhỏ</h2>
+                    <p>Bộ sưu tập gấu bông và đồ chơi thông minh cực hot dành cho bé</p>
+                </div>
+            </div>
+        </div>
+
+        <button class="slider-btn btn-next" onclick="moveSlide(1)">❯</button>
+
+        <div class="slider-dots" id="sliderDots">
+            <div class="dot active" onclick="currentSlide(0)"></div>
+            <div class="dot" onclick="currentSlide(1)"></div>
+            <div class="dot" onclick="currentSlide(2)"></div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <h2 class="section-title">Khám Phá Cửa Hàng</h2>
+
+        <div class="categories-container">
+
+            <section class="category-block">
+                <div class="category-header">
+                    <div class="cat-icon bg-1">🎢</div>
+                    <div class="cat-text">
+                        <h3>Playground 2026</h3>
+                        <p>Xu hướng đồ chơi tương tác và vận động mới nhất năm nay.</p>
+                    </div>
+                </div>
+
+                <div class="products-horizontal-slider">
+                    <div class="product-card" onclick="window.location.href='product-detail.html?id=1'">
+                        <div class="product-img">
+                            <img src="/frontend/img/xe dua.jpg" alt="Xe Đua Địa Hình Cân Bằng">
+                        </div>
+                        <h4 class="product-name">Xe Đua Địa Hình Cân Bằng</h4>
+                        <p class="product-price">450.000 đ</p>
+                    </div>
+                    <div class="product-card" onclick="window.location.href='product-detail.html?id=2'">
+                        <div class="product-img">
+                            <img src="/frontend/img/robot.jpg" alt="Robot Nhảy Múa Thông Minh">
+                        </div>
+                        <h4 class="product-name">Robot Nhảy Múa Thông Minh</h4>
+                        <p class="product-price">620.000 đ</p>
+                    </div>
+                    <div class="product-card" onclick="window.location.href='product-detail.html?id=3'">
+                        <div class="product-img">
+                            <img src="/frontend/img/vantruot.jpg" alt="Ván Trượt Thể Thao Siêu Hạng">
+                        </div>
+                        <h4 class="product-name">Ván Trượt Thể Thao Siêu Hạng</h4>
+                        <p class="product-price">350.000 đ</p>
+                    </div>
+                    <div class="product-card" onclick="window.location.href='product-detail.html?id=4'">
+                        <div class="product-img">
+                            <img src="/frontend/img/phitieu.jpg" alt="Bộ Phi Tiêu Nam Châm An Toàn">
+                        </div>
+                        <h4 class="product-name">Bộ Phi Tiêu Nam Châm An Toàn</h4>
+                        <p class="product-price">180.000 đ</p>
+                    </div>
+                    <div class="product-card" onclick="window.location.href='product-detail.html?id=5'">
+                        <div class="product-img">
+                            <img src="/frontend/img/legomaybay.jpg" alt="Lego City Máy Bay Cứu Hộ">
+                        </div>
+                        <h4 class="product-name">Lego City Máy Bay Cứu Hộ</h4>
+                        <p class="product-price">390.000 đ</p>
+                    </div>
+                </div>
+
+                <div class="g4-scroll-controller">
+                    <div class="g4-scrollbar-track">
+                        <div class="g4-scrollbar-thumb">👑</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="category-block">
+                <div class="category-header">
+                    <div class="cat-icon bg-2">🎁</div>
+                    <div class="cat-text">
+                        <h3>Quà To Giá Nhỏ</h3>
+                        <p>Các deal siêu hời, giảm giá ngập tràn cho bé yêu.</p>
+                    </div>
+                </div>
+
+                <div class="products-horizontal-slider">
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="/frontend/img/gaubong.jpg" alt="Gấu Bông Khổng Lồ Đáng Yêu">
+                        </div>
+                        <h4 class="product-name">Gấu Bông Khổng Lồ Đáng Yêu</h4>
+                        <p class="product-price">199.000 đ <span class="old-price">350.000 đ</span></p>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="/frontend/img/thehoc.jpg" alt="Bộ Thẻ Học Tư Duy Cho Bé">
+                        </div>
+                        <h4 class="product-name">Bộ Thẻ Học Tư Duy Cho Bé</h4>
+                        <p class="product-price">95.000 đ <span class="old-price">150.000 đ</span></p>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="/frontend/img/hopmau.jpg" alt="Hộp Màu Vẽ Đa Năng 48 Món">
+                        </div>
+                        <h4 class="product-name">Hộp Màu Vẽ Đa Năng 48 Món</h4>
+                        <p class="product-price">75.000 đ <span class="old-price">120.000 đ</span></p>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="/frontend/img/bongbong.jpg" alt="Combo Bong Bóng Tạo Hình">
+                        </div>
+                        <h4 class="product-name">Combo Bong Bóng Tạo Hình Nghệ Thuật</h4>
+                        <p class="product-price">45.000 đ <span class="old-price">90.000 đ</span></p>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-img">
+                            <img src="/frontend/img/pony.jpg" alt="Mô Hình Ngựa Pony Thần Kỳ">
+                        </div>
+                        <h4 class="product-name">Mô Hình Ngựa Pony Thần Kỳ</h4>
+                        <p class="product-price">150.000 đ <span class="old-price">250.000 đ</span></p>
+                    </div>
+                </div>
+
+                <div class="g4-scroll-controller">
+                    <div class="g4-scrollbar-track">
+                        <div class="g4-scrollbar-thumb">👑</div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>Về G4 ToyStore</h4>
+                <p>📍 Địa chỉ: Tòa nhà FPT, Quận 9, TP.HCM</p>
+                <p>📞 Hotline: 0999.999.999</p>
+                <p>📧 Email: contact@g4toystore.com</p>
+                <p>🕒 Giờ mở cửa: 8:00 - 22:00 (Cả tuần)</p>
+            </div>
+
+            <div class="footer-section">
+                <h4>Dịch Vụ Khách Hàng</h4>
+                <ul class="blog-list">
+                    <li><a href="policy.html?type=return">Chính sách đổi trả</a></li>
+                    <li><a href="policy.html?type=warranty">Chính sách bảo hành</a></li>
+                    <li><a href="guide.html">Hướng dẫn mua hàng</a></li>
+                    <li><a href="payment.html">Phương thức thanh toán</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Góc Trẻ Thơ (Blog)</h4>
+                <ul class="blog-list">
+                    <li>
+                        <a href="blog-detail.html?id=101">Cách chọn đồ chơi an toàn cho bé dưới 3 tuổi</a>
+                        <span class="blog-date">20/05/2026</span>
+                    </li>
+                    <li>
+                        <a href="blog-detail.html?id=102">LEGO City 2026: Có gì mới trong bộ sưu tập Hè?</a>
+                        <span class="blog-date">15/05/2026</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 G4 ToyStore. All rights reserved. Database Powered by Nhóm G4.</p>
+        </div>
+    </footer>
+
+
+    <script>
+        // --- Phần 1: Code Logic Cho Slider Chuyển Ảnh Banner ---
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        const dots = document.querySelectorAll('.dot');
+        const totalSlides = slides.length;
+        let sliderTimer;
+
+        function updateSlider() {
+            sliderWrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+
+            dots.forEach((dot, index) => {
+                if (index === currentSlideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            resetTimer();
+        }
+
+        function moveSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex >= totalSlides) {
+                currentSlideIndex = 0;
+            } else if (currentSlideIndex < 0) {
+                currentSlideIndex = totalSlides - 1;
+            }
+            updateSlider();
+        }
+
+        function currentSlide(index) {
+            currentSlideIndex = index;
+            updateSlider();
+        }
+
+        function resetTimer() {
+            clearInterval(sliderTimer);
+            sliderTimer = setInterval(() => {
+                moveSlide(1);
+            }, 4000);
+        }
+
+        resetTimer();
+
+
+        // --- Phần 2: Xử Lý Kéo Vương Miện Để Điều Khiển Cuộn Sản Phẩm ---
+        document.addEventListener("DOMContentLoaded", function () {
+            const blocks = document.querySelectorAll('.category-block');
+
+            blocks.forEach(block => {
+                const productSlider = block.querySelector('.products-horizontal-slider');
+                const track = block.querySelector('.g4-scrollbar-track');
+                const thumb = block.querySelector('.g4-scrollbar-thumb');
+
+                if (!productSlider || !track || !thumb) return;
+
+                let isDragging = false;
+                let startX = 0;
+                let startThumbLeft = 0;
+
+                function getSliderBounds() {
+                    const maxThumbLeft = track.clientWidth - thumb.clientWidth;
+                    const maxProductScroll = productSlider.scrollWidth - productSlider.clientWidth;
+                    return { maxThumbLeft, maxProductScroll };
+                }
+
+                productSlider.addEventListener('scroll', () => {
+                    if (isDragging) return;
+                    const { maxThumbLeft, maxProductScroll } = getSliderBounds();
+                    if (maxProductScroll <= 0) return;
+
+                    const scrollPercentage = productSlider.scrollLeft / maxProductScroll;
+                    thumb.style.left = `${scrollPercentage * maxThumbLeft}px`;
+                });
+
+                thumb.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.clientX;
+                    startThumbLeft = parseInt(window.getComputedStyle(thumb).left) || 0;
+                    document.body.style.userSelect = 'none';
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+
+                    const { maxThumbLeft, maxProductScroll } = getSliderBounds();
+
+                    let deltaX = e.clientX - startX;
+                    let newLeft = startThumbLeft + deltaX;
+
+                    if (newLeft < 0) newLeft = 0;
+                    if (newLeft > maxThumbLeft) newLeft = maxThumbLeft;
+
+                    thumb.style.left = `${newLeft}px`;
+
+                    if (maxThumbLeft > 0) {
+                        const percent = newLeft / maxThumbLeft;
+                        productSlider.scrollLeft = percent * maxProductScroll;
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isDragging) {
+                        isDragging = false;
+                        document.body.style.userSelect = '';
+                    }
+                });
+
+                track.addEventListener('click', (e) => {
+                    if (e.target === thumb) return;
+
+                    const { maxThumbLeft, maxProductScroll } = getSliderBounds();
+                    const rect = track.getBoundingClientRect();
+                    let clickX = e.clientX - rect.left - (thumb.clientWidth / 2);
+
+                    if (clickX < 0) clickX = 0;
+                    if (clickX > maxThumbLeft) clickX = maxThumbLeft;
+
+                    thumb.style.left = `${clickX}px`;
+                    if (maxThumbLeft > 0) {
+                        const percent = clickX / maxThumbLeft;
+                        productSlider.scrollLeft = percent * maxProductScroll;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

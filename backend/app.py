@@ -16,6 +16,8 @@ from routes.auth_routes import auth_routes
 
 from routes.products_routes import product_routes
 
+from routes.paypal_routes import paypal_routes
+
 from middleware.error_middleware import register_error_handlers
 
 
@@ -51,6 +53,11 @@ def create_app():
     app.register_blueprint(
         product_routes,
         url_prefix="/api/products"
+    )
+
+    app.register_blueprint(
+        paypal_routes,
+        url_prefix="/api/paypal"
     )
 
     @app.route("/")

@@ -572,7 +572,7 @@
                 <button class="btn-add-to-cart" onclick="alert('Đã thêm sản phẩm vào giỏ hàng thành công!')">
                     <i class="fa-solid fa-cart-plus"></i> Thêm Vào Giỏ
                 </button>
-                <button class="btn-buy-now" onclick="alert('Chuyển tới trang thanh toán nhanh!')">Mua Ngay</button>
+                <button class="btn-buy-now" onclick="buyNow()">Mua Ngay</button>
             </div>
         </div>
     </main>
@@ -704,6 +704,14 @@
                 document.getElementById('breadcrumbCategory').innerText = "Đồ Chơi G4";
             }
         });
+        // Hàm Mua Ngay - chuyển đến trang thanh toán PayPal
+        function buyNow() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id') || '1';
+            const quantity = document.getElementById('quantityInput').value || 1;
+            
+            window.location.href = `checkout.html?id=${productId}&qty=${quantity}`;
+        }
     </script>
 </body>
 

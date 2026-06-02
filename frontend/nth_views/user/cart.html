@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng Của Bạn - G4 ToyStore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Nhúng CSS & JS Header/Navbar chung -->
+    <link rel="stylesheet" href="header-navbar.css">
+    <script src="header-navbar.js" defer></script>
+
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --dark-blue: #2c3e50;
+            --text-color: #333333;
+            --bg-light: #f5f7fa;
+            --white: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- HEADER --- */
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* --- MAIN WRAPPER --- */
+        .cart-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
+        }
+
+        @media (max-width: 992px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- CỘT TRÁI: DANH SÁCH GIỎ HÀNG --- */
+        .cart-main {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .cart-title-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .cart-title-box h2 {
+            color: var(--dark-blue);
+            font-size: 1.5rem;
+        }
+
+        /* Item hàng hóa */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            gap: 20px;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .item-img {
+            font-size: 2.5rem;
+            background: var(--bg-light);
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-info h4 {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .item-info p {
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .item-price {
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            width: 120px;
+            text-align: right;
+        }
+
+        /* Bộ tăng giảm số lượng */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--white);
+        }
+
+        .quantity-btn {
+            background: none;
+            border: none;
+            width: 35px;
+            height: 35px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #64748b;
+        }
+
+        .quantity-btn:hover {
+            background: var(--bg-light);
+        }
+
+        .quantity-input {
+            width: 40px;
+            height: 35px;
+            text-align: center;
+            border: none;
+            border-left: 2px solid var(--border-color);
+            border-right: 2px solid var(--border-color);
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            outline: none;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 5px;
+        }
+
+        .btn-remove:hover {
+            color: var(--danger, #e74c3c);
+        }
+
+        /* --- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG --- */
+        .cart-summary {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            height: fit-content;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .cart-summary h3 {
+            color: var(--dark-blue);
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 10px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .summary-row.total {
+            border-top: 1px dashed var(--border-color);
+            padding-top: 15px;
+            margin-top: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+        }
+
+        .summary-row.total .total-price {
+            color: var(--primary-color);
+        }
+
+        .btn-checkout {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.2);
+        }
+
+        .btn-checkout:hover {
+            background: #ff5252;
+        }
+
+        .btn-continue {
+            display: block;
+            text-align: center;
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--dark-blue);
+            border: 2px solid var(--dark-blue);
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn-continue:hover {
+            background: var(--dark-blue);
+            color: white;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 0;
+            display: none;
+        }
+
+        .empty-cart h3 {
+            margin: 15px 0 10px;
+            color: #64748b;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <div class="cart-container">
+
+        <main class="cart-main">
+            <div class="cart-title-box">
+                <h2>Giỏ Hàng Của Bạn</h2>
+                <span id="cart-count-top" style="font-weight: 600; color: #64748b;">(3 sản phẩm)</span>
+            </div>
+
+            <div id="cart-items-wrapper">
+            </div>
+
+            <div id="empty-view" class="empty-cart">
+                <span style="font-size: 4rem;">🛒</span>
+                <h3>Giỏ hàng của bạn đang trống rỗng!</h3>
+                <p style="color: #94a3b8; margin-bottom: 20px;">Hãy quay lại trang chủ và chọn cho mình những món đồ
+                    chơi yêu thích nhé.</p>
+                <a href="home.html" class="btn-continue"
+                    style="display:inline-block; width:auto; padding: 10px 30px;">Quay Lại Mua Sắm</a>
+            </div>
+        </main>
+
+        <aside class="cart-summary" id="summary-section">
+            <h3>Tóm tắt đơn hàng</h3>
+
+            <div class="summary-row">
+                <span>Tạm tính</span>
+                <span id="subtotal-price">0 đ</span>
+            </div>
+            <div class="summary-row">
+                <span>Phí vận chuyển</span>
+                <span id="shipping-fee">Đồng giá 30.000 đ</span>
+            </div>
+
+            <div class="summary-row total">
+                <span>Tổng cộng</span>
+                <span class="total-price" id="final-total">0 đ</span>
+            </div>
+
+            <button class="btn-checkout" onclick="proceedToCheckout()">Tiến Hành Thanh Toán</button>
+            <a href="home.html" class="btn-continue">← Tiếp Tục Mua Sắm</a>
+        </aside>
+    </div>
+
+    <script>
+        // Mảng Mock Data mô phỏng giỏ hàng được lưu trữ (sau này bạn có thể lưu bằng localStorage)
+        let cartData = [
+            { id: 1, name: "Xe Đua Địa Hình Cân Bằng", brand: "Hot Wheels", price: 450000, img: "🏎️", quantity: 1 },
+            { id: 2, name: "Robot Nhảy Múa Thông Minh", brand: "Bandai", price: 620000, img: "🤖", quantity: 2 },
+            { id: 3, name: "Lego Lâu Đài Cổ Tích 500 Chi Tiết", brand: "LEGO", price: 890000, img: "🏰", quantity: 1 }
+        ];
+
+        const SHIPPING_FEE = 30000;
+
+        // 1. HÀM VẼ GIAO DIỆN GIỎ HÀNG (RENDER CART)
+        function renderCart() {
+            const wrapper = document.getElementById("cart-items-wrapper");
+            const emptyView = document.getElementById("empty-view");
+            const summarySection = document.getElementById("summary-section");
+            const countTop = document.getElementById("cart-count-top");
+
+            wrapper.innerHTML = ""; // Reset vùng chứa
+
+            // Nếu giỏ hàng trống
+            if (cartData.length === 0) {
+                wrapper.style.display = "none";
+                emptyView.style.display = "block";
+                summarySection.style.display = "none";
+                countTop.innerText = "(0 sản phẩm)";
+                return;
+            }
+
+            // Nếu có hàng, hiển thị danh sách
+            wrapper.style.display = "block";
+            emptyView.style.display = "none";
+            summarySection.style.display = "flex";
+
+            let totalItems = 0;
+            let subtotal = 0;
+
+            cartData.forEach(item => {
+                totalItems += item.quantity;
+                subtotal += item.price * item.quantity;
+
+                wrapper.innerHTML += `
+                    <div class="cart-item">
+                        <div class="item-img">${item.img}</div>
+                        <div class="item-info">
+                            <h4>${item.name}</h4>
+                            <p>${item.brand}</p>
+                        </div>
+                        <div class="quantity-control">
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <input type="text" class="quantity-input" value="${item.quantity}" readonly>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </div>
+                        <div class="item-price">${(item.price * item.quantity).toLocaleString('vi-VN')} đ</div>
+                        <button class="btn-remove" onclick="removeCartItem(${item.id})">🗑️</button>
+                    </div>
+                `;
+            });
+
+            // Cập nhật số lượng hiển thị ở tiêu đề
+            countTop.innerText = `(${totalItems} sản phẩm)`;
+
+            // Tính toán khung hóa đơn bên phải
+            document.getElementById("subtotal-price").innerText = subtotal.toLocaleString('vi-VN') + " đ";
+            document.getElementById("final-total").innerText = (subtotal + SHIPPING_FEE).toLocaleString('vi-VN') + " đ";
+        }
+
+        // 2. HÀM TĂNG / GIẢM SỐ LƯỢNG
+        function updateQuantity(id, change) {
+            const item = cartData.find(p => p.id === id);
+            if (item) {
+                item.quantity += change;
+
+                // Nếu giảm xuống bằng 0 thì tiến hành xóa luôn khỏi giỏ
+                if (item.quantity <= 0) {
+                    removeCartItem(id);
+                    return;
+                }
+                renderCart();
+            }
+        }
+
+        // 3. HÀM XÓA SẢN PHẨM KHỎI GIỎ
+        function removeCartItem(id) {
+            const item = cartData.find(p => p.id === id);
+            if (confirm(`Bạn muốn bỏ sản phẩm "${item.name}" ra khỏi giỏ hàng?`)) {
+                cartData = cartData.filter(p => p.id !== id);
+                renderCart();
+            }
+        }
+
+        // 4. HÀM ĐẶT HÀNG THANH TOÁN
+        function proceedToCheckout() {
+            alert("Hệ thống G4 ToyStore đã ghi nhận đơn hàng của bạn thành công! Cảm ơn bạn đã mua sắm.");
+            cartData = []; // Clear giỏ hàng sau khi thanh toán thành công
+            renderCart();
+        }
+
+        // Khởi động chạy render giỏ hàng ngay khi mở trang
+        window.onload = renderCart;
+
+        function checkLoginNavbar() {
+            // Đọc dữ liệu user từ localStorage
+            const loggedName = localStorage.getItem("admin_name");
+            const loggedAvatar = localStorage.getItem("admin_avatar");
+
+            const loginBtn = document.getElementById("header-login-btn");
+            const userProfile = document.getElementById("header-user-profile");
+            const usernameText = document.getElementById("header-username-text");
+            const avatarImg = document.getElementById("header-avatar-img");
+
+            if (loggedName) {
+                // 1. Ẩn nút "Đăng Nhập" thường
+                loginBtn.style.display = "none";
+
+                // 2. Hiển thị khối Profile
+                userProfile.style.display = "flex";
+
+                // 3. Đưa dữ liệu tên vào
+                usernameText.innerText = loggedName;
+
+                // 4. Đưa avatar vào, nếu ko có avatar google thì tự sinh avatar dạng chữ viết tắt
+                if (loggedAvatar) {
+                    avatarImg.src = loggedAvatar;
+                } else {
+                    avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedName)}&background=ff6b6b&color=fff`;
+                }
+            } else {
+                // Nếu chưa đăng nhập, trả về mặc định
+                loginBtn.style.display = "inline-flex";
+                userProfile.style.display = "none";
+            }
+        }
+
+        // XỬ LÝ SỰ KIỆN ĐĂNG XUẤT (LOGOUT)
+        function handleLogout(e) {
+            e.preventDefault();
+            if (confirm("Bạn có muốn đăng xuất khỏi tài khoản hệ thống?")) {
+                localStorage.removeItem("admin_name");
+                localStorage.removeItem("admin_avatar");
+                alert("Đăng xuất thành công!");
+                window.location.reload(); // Tải lại trang chủ để cập nhật UI
+            }
+        }
+
+        // Kích hoạt chạy hàm kiểm tra trạng thái ngay khi trang web tải xong cấu trúc DOM
+        window.addEventListener("DOMContentLoaded", checkLoginNavbar);
+    </script>
+</body>
+
+</html>

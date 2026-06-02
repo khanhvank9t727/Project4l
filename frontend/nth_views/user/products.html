@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cửa Hàng Đồ Chơi - G4 ToyStore</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Nhúng CSS & JS Header/Navbar chung -->
+    <link rel="stylesheet" href="header-navbar.css">
+    <script src="header-navbar.js" defer></script>
 
     <style>
         :root {
@@ -33,197 +36,6 @@
         a {
             text-decoration: none;
             color: inherit;
-        }
-
-        /* --- HEADER TOP --- */
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 50px;
-            background-color: var(--white);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo h1 {
-            color: var(--primary-color);
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        /* Cụm nút thao tác trên Header */
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-action {
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 700;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-login {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-login:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-cart {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-cart:hover {
-            background-color: #ee5253;
-            border-color: #ee5253;
-        }
-
-        /* Khối thông tin User sau khi đăng nhập */
-        .user-profile {
-            display: none;
-            /* Mặc định ẩn, JS sẽ bật lên */
-            align-items: center;
-            gap: 10px;
-            position: relative;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 20px;
-            border: 1px solid #e0e0e0;
-            background-color: var(--white);
-        }
-
-        .user-profile img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 0.95rem;
-        }
-
-        /* Menu thả xuống của Avatar */
-        .user-dropdown {
-            display: none;
-            position: absolute;
-            top: 110%;
-            right: 0;
-            background: var(--white);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-radius: 8px;
-            min-width: 150px;
-            z-index: 1000;
-            overflow: hidden;
-        }
-
-        .user-profile:hover .user-dropdown {
-            display: block;
-        }
-
-        .user-dropdown a {
-            display: block;
-            padding: 10px 15px;
-            font-size: 0.9rem;
-            color: #333;
-            transition: 0.2s;
-        }
-
-        .user-dropdown a:hover {
-            background-color: #fff5f5;
-            color: var(--primary-color);
-        }
-
-        /* --- MAIN NAVBAR --- */
-        .main-nav {
-            background-color: var(--dark-blue);
-            padding: 0 50px;
-            position: sticky;
-            top: 72px;
-            z-index: 999;
-        }
-
-        .nav-list {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-item>a {
-            display: block;
-            padding: 15px 0;
-            color: var(--white);
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .nav-item:hover>a,
-        .nav-item.active>a {
-            color: var(--secondary-color);
-        }
-
-        /* Thả menu Dropdown */
-        .dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--white);
-            min-width: 220px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 10px 10px;
-            list-style: none;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-
-        .nav-item:hover .dropdown {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text-color);
-            border-bottom: 1px solid #f0f0f0;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .dropdown li:last-child a {
-            border-bottom: none;
-        }
-
-        .dropdown a:hover {
-            background-color: #f8f9fa;
-            color: var(--primary-color);
-            padding-left: 25px;
         }
 
         /* --- CẤU TRÚC LAYOUT BÊN DƯỚI --- */
@@ -382,21 +194,6 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .header-top {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px 20px;
-            }
-
-            .main-nav {
-                top: 125px;
-                padding: 0 20px;
-            }
-
-            .nav-list {
-                gap: 15px;
-            }
-
             .container {
                 grid-template-columns: 1fr;
             }
@@ -405,55 +202,6 @@
 </head>
 
 <body>
-
-    <header class="header-top">
-        <div class="logo">
-            <a href="home.html">
-                <h1>🧸 G4 ToyStore</h1>
-            </a>
-        </div>
-
-        <div class="header-actions">
-            <a href="login.html" id="header-login-btn" class="btn-action btn-login">👤 Đăng nhập</a>
-
-            <div id="header-user-profile" class="user-profile">
-                <img id="header-avatar-img" src="" alt="Avatar">
-                <span id="header-username-text" class="user-name">Admin</span>
-                <div class="user-dropdown">
-                    <a href="#" onclick="handleLogout(event)">🚪 Đăng xuất</a>
-                </div>
-            </div>
-
-            <a href="#" class="btn-action btn-cart">🛒 Giỏ hàng (0)</a>
-        </div>
-    </header>
-
-    <nav class="main-nav">
-        <ul class="nav-list">
-            <li class="nav-item"><a href="home.html">Trang Chủ</a></li>
-            <li class="nav-item active">
-                <a href="#">Sản Phẩm ▾</a>
-                <ul class="dropdown">
-                    <li><a href="products.html?cat=playground-2026">Playground 2026</a></li>
-                    <li><a href="products.html?cat=qua-to-gia-nho">Quà To Giá Nhỏ</a></li>
-                    <li><a href="products.html?cat=thung-gach-sang-tao">Thùng Gạch Sáng Tạo</a></li>
-                    <li><a href="products.html?cat=muc-hot">Mục Hot (Bán Chạy)</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#">Thương Hiệu ▾</a>
-                <ul class="dropdown">
-                    <li><a href="products.html?brand=lego">LEGO</a></li>
-                    <li><a href="products.html?brand=hotwheels">Hot Wheels</a></li>
-                    <li><a href="products.html?brand=mylittlepony">My Little Pony</a></li>
-                    <li><a href="products.html?brand=bandai">Bandai</a></li>
-                </ul>
-            </li>
-            <li class="nav-item" style="margin-left: auto;">
-                <a href="../admin/dashboard.html" style="color: #ffdd59; font-weight: 700;">⚙️</a>
-            </li>
-        </ul>
-    </nav>
 
     <div class="container">
 
@@ -500,14 +248,18 @@
     </footer>
 
     <script>
-        // Kho dữ liệu tổng hợp đầy đủ thuộc tính category và brand
+        // Kho dữ liệu tổng hợp đầy đủ thuộc tính category và brand (Đồng bộ với home.html và product-detail.html)
         const mockDatabase = [
             { id: 1, category: 'playground-2026', brand: 'hotwheels', name: 'Xe Đua Địa Hình Cân Bằng', price: '450.000 đ', img: '🏎️' },
             { id: 2, category: 'playground-2026', brand: 'bandai', name: 'Robot Nhảy Múa Thông Minh', price: '620.000 đ', img: '🤖' },
-            { id: 3, category: 'playground-2026', brand: 'hotwheels', name: 'Siêu Xe Đường Ray Tốc Độ', price: '290.000 đ', img: '🚗' },
+            { id: 3, category: 'playground-2026', brand: 'hotwheels', name: 'Ván Trượt Thể Thao Siêu Hạng', price: '350.000 đ', img: '🛹' },
+            { id: 4, category: 'playground-2026', brand: 'hotwheels', name: 'Bộ Phi Tiêu Nam Châm An Toàn', price: '180.000 đ', img: '🎯' },
+            { id: 5, category: 'playground-2026', brand: 'bandai', name: 'Xe Scooter Điện Trẻ Em', price: '1.250.000 đ', img: '🛴' },
 
-            { id: 4, category: 'qua-to-gia-nho', brand: 'mylittlepony', name: 'Ngựa Pony Hồng Đáng Yêu', price: '199.000 đ', img: '🦄' },
-            { id: 5, category: 'qua-to-gia-nho', brand: 'bandai', name: 'Bộ Thẻ Học Tư Duy Cho Bé', price: '95.000 đ', img: '🧩' },
+            { id: 11, category: 'qua-to-gia-nho', brand: 'mylittlepony', name: 'Gấu Bông Khổng Lồ Đáng Yêu', price: '199.000 đ', img: '🧸' },
+            { id: 12, category: 'qua-to-gia-nho', brand: 'bandai', name: 'Bộ Thẻ Học Tư Duy Cho Bé', price: '95.000 đ', img: '🧩' },
+            { id: 13, category: 'qua-to-gia-nho', brand: 'bandai', name: 'Hộp Màu Vẽ Đa Năng 48 Món', price: '75.000 đ', img: '🎨' },
+            { id: 14, category: 'qua-to-gia-nho', brand: 'mylittlepony', name: 'Mô Hình Ngựa Pony Thần Kỳ', price: '150.000 đ', img: '🦄' },
 
             { id: 6, category: 'thung-gach-sang-tao', brand: 'lego', name: 'Lego Lâu Đài Cổ Tích 500 Mảnh', price: '890.000 đ', img: '🏰' },
             { id: 7, category: 'thung-gach-sang-tao', brand: 'lego', name: 'Lego Phi Thuyền Không Gian', price: '750.000 đ', img: '🚀' },
@@ -576,68 +328,24 @@
                 return;
             }
 
+            // Cập nhật: thẻ cha của sản phẩm đổi thành thẻ <a> liên kết đến product-detail.html kèm ID tương ứng
             renderList.forEach(item => {
                 grid.innerHTML += `
-                    <div class="product-card">
+                    <a href="product-detail.html?id=${item.id}" class="product-card">
                         <div class="product-img">${item.img}</div>
                         <div>
                             <span class="product-brand-tag">${item.brand}</span>
                             <h4 class="product-name">${item.name}</h4>
                             <p class="product-price">${item.price}</p>
                         </div>
-                    </div>
+                    </a>
                 `;
             });
-        }
-
-        function checkLoginNavbar() {
-            // Đọc dữ liệu user từ localStorage
-            const loggedName = localStorage.getItem("admin_name");
-            const loggedAvatar = localStorage.getItem("admin_avatar");
-
-            const loginBtn = document.getElementById("header-login-btn");
-            const userProfile = document.getElementById("header-user-profile");
-            const usernameText = document.getElementById("header-username-text");
-            const avatarImg = document.getElementById("header-avatar-img");
-
-            if (loggedName) {
-                // 1. Ẩn nút "Đăng Nhập" thường
-                loginBtn.style.display = "none";
-
-                // 2. Hiển thị khối Profile
-                userProfile.style.display = "flex";
-
-                // 3. Đưa dữ liệu tên vào
-                usernameText.innerText = loggedName;
-
-                // 4. Đưa avatar vào, nếu ko có avatar google thì tự sinh avatar dạng chữ viết tắt
-                if (loggedAvatar) {
-                    avatarImg.src = loggedAvatar;
-                } else {
-                    avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedName)}&background=ff6b6b&color=fff`;
-                }
-            } else {
-                // Nếu chưa đăng nhập, trả về mặc định
-                loginBtn.style.display = "inline-flex";
-                userProfile.style.display = "none";
-            }
-        }
-
-        // XỬ LÝ SỰ KIỆN ĐĂNG XUẤT (LOGOUT)
-        function handleLogout(e) {
-            e.preventDefault();
-            if (confirm("Bạn có muốn đăng xuất khỏi tài khoản hệ thống?")) {
-                localStorage.removeItem("admin_name");
-                localStorage.removeItem("admin_avatar");
-                alert("Đăng xuất thành công!");
-                window.location.reload(); // Tải lại trang chủ để cập nhật UI
-            }
         }
 
         // Đăng ký sự kiện an toàn khi DOM sẵn sàng
         window.addEventListener("DOMContentLoaded", () => {
             initPage();
-            checkLoginNavbar();
         });
     </script>
 </body>

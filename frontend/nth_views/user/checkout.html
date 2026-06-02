@@ -8,10 +8,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- PayPal JS SDK - Sandbox -->
-    <script src="https://www.paypal.com/sdk/js?client-id=ASTZc4RK6VDluKsxZQ6AMMxrDg8bwRQjttl4bhrfIbIomeZD77vEnA5i-Dd0rfWSndfoU7iDSg_9B2Qn&currency=USD"></script>
+    <link rel="stylesheet" href="header-navbar.css">
+
+    <script
+        src="https://www.paypal.com/sdk/js?client-id=ASTZc4RK6VDluKsxZQ6AMMxrDg8bwRQjttl4bhrfIbIomeZD77vEnA5i-Dd0rfWSndfoU7iDSg_9B2Qn&currency=USD"></script>
 
     <style>
+        /* Chỉ giữ lại các CSS đặc thù của trang Checkout, xóa bỏ hoàn toàn CSS Header/Navbar trùng lặp */
         :root {
             --primary-color: #ff6b6b;
             --secondary-color: #4ecdc4;
@@ -21,184 +24,6 @@
             --dark-navy: #2c3e50;
             --success-green: #27ae60;
             --warning-orange: #f39c12;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Quicksand', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* --- HEADER TOP --- */
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 50px;
-            background-color: var(--white);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo h1 {
-            color: var(--primary-color);
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .search-bar {
-            display: flex;
-            width: 400px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-right: none;
-            border-radius: 20px 0 0 20px;
-            outline: none;
-            font-size: 0.95rem;
-        }
-
-        .search-bar input:focus {
-            border-color: var(--secondary-color);
-        }
-
-        .search-bar button {
-            padding: 10px 20px;
-            background-color: var(--secondary-color);
-            color: var(--white);
-            border: 2px solid var(--secondary-color);
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .search-bar button:hover {
-            background-color: #38b2ac;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .btn-login {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-login:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-cart {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-cart:hover {
-            background-color: #ee5253;
-        }
-
-        /* --- NAVBAR CHÍNH --- */
-        .main-nav {
-            background-color: var(--dark-navy);
-            padding: 0 50px;
-        }
-
-        .nav-list {
-            display: flex;
-            list-style: none;
-            gap: 35px;
-            align-items: center;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-item>a {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 15px 10px;
-            color: var(--white);
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .nav-item:hover>a {
-            color: var(--secondary-color);
-        }
-
-        .dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--white);
-            min-width: 220px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 10px 10px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-
-        .nav-item:hover .dropdown {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown li {
-            list-style: none;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .dropdown a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-
-        .dropdown a:hover {
-            background-color: #f8f9fa;
-            color: var(--primary-color);
-            padding-left: 25px;
         }
 
         /* --- BREADCRUMB --- */
@@ -249,7 +74,6 @@
             font-size: 1.3rem;
         }
 
-        /* Product row in order summary */
         .order-product-row {
             display: flex;
             align-items: center;
@@ -309,7 +133,6 @@
             font-weight: 700;
         }
 
-        /* Price breakdown */
         .price-breakdown {
             border-top: 2px dashed #e0e0e0;
             margin-top: 10px;
@@ -422,8 +245,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .payment-loading p {
@@ -487,8 +315,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .success-modal {
@@ -503,8 +336,15 @@
         }
 
         @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .success-icon {
@@ -520,9 +360,17 @@
         }
 
         @keyframes bounceIn {
-            0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .success-icon i {
@@ -730,15 +578,11 @@
             .checkout-container {
                 grid-template-columns: 1fr;
             }
+
             .payment-card {
                 position: static;
             }
-            .header-top {
-                padding: 15px 20px;
-            }
-            .search-bar {
-                width: 250px;
-            }
+
             .success-modal {
                 padding: 35px 25px;
             }
@@ -747,61 +591,13 @@
 </head>
 
 <body>
-
-    <header class="header-top">
-        <div class="logo">
-            <a href="home.html">
-                <h1>🧸 G4 ToyStore</h1>
-            </a>
-        </div>
-
-        <form class="search-bar" action="#">
-            <input type="text" placeholder="Tìm kiếm đồ chơi, thương hiệu...">
-            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Tìm</button>
-        </form>
-
-        <div class="header-actions">
-            <a href="login.html" class="btn-action btn-login"><i class="fa-regular fa-user"></i> Đăng Nhập</a>
-            <a href="cart.html" class="btn-action btn-cart"><i class="fa-solid fa-cart-shopping"></i> Giỏ Hàng (0)</a>
-        </div>
-    </header>
-
-    <nav class="main-nav">
-        <ul class="nav-list">
-            <li class="nav-item"><a href="home.html"><i class="fa-solid fa-house"></i> Trang Chủ</a></li>
-            <li class="nav-item">
-                <a href="#"><i class="fa-solid fa-cubes"></i> Sản Phẩm <i class="fa-solid fa-chevron-down"></i></a>
-                <ul class="dropdown">
-                    <li><a href="products.html?cat=lap-rap">Đồ chơi lắp ráp</a></li>
-                    <li><a href="products.html?cat=bup-be">Búp bê & Phụ kiện</a></li>
-                    <li><a href="products.html?cat=thong-minh">Đồ chơi thông minh</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#"><i class="fa-solid fa-tags"></i> Thương Hiệu <i class="fa-solid fa-chevron-down"></i></a>
-                <ul class="dropdown">
-                    <li><a href="brands.html?b=lego">LEGO</a></li>
-                    <li><a href="brands.html?b=hotwheels">Hot Wheels</a></li>
-                    <li><a href="brands.html?b=mylittlepony">My Little Pony</a></li>
-                    <li><a href="brands.html?b=bandai">Bandai</a></li>
-                </ul>
-            </li>
-            <li class="nav-item" style="margin-left: auto;">
-                <a href="../admin/dashboard.html" style="color: #ffdd59; font-weight: 700;"><i class="fa-solid fa-gear"></i></a>
-            </li>
-        </ul>
-    </nav>
-
     <div class="breadcrumb">
         <a href="home.html">Trang chủ</a> &gt; <span style="color: #333; font-weight: 600;">Thanh toán</span>
     </div>
 
-    <!-- Main Checkout Content -->
     <div class="checkout-container" id="checkoutContent">
-        <!-- Will be populated by JS -->
     </div>
 
-    <!-- Success Overlay -->
     <div class="success-overlay" id="successOverlay">
         <div class="success-modal">
             <div class="success-icon">
@@ -877,66 +673,27 @@
         </div>
     </footer>
 
+    <script src="header-navbar.js"></script>
+
     <script>
         // ========================================
-        // CƠ SỞ DỮ LIỆU SẢN PHẨM (đồng bộ với product-detail.html)
+        // CƠ SỞ DỮ LIỆU SẢN PHẨM
         // ========================================
         const catalogProducts = {
-            "1": {
-                name: "Xe Đua Địa Hình Cân Bằng",
-                price: 450000,
-                priceDisplay: "450.000 đ",
-                brand: "HOT WHEELS",
-                img: "🏎️",
-                desc: "Xe đua địa hình cân bằng sở hữu hệ thống giảm xóc bánh lớn"
-            },
-            "2": {
-                name: "Robot Nhảy Múa Thông Minh",
-                price: 620000,
-                priceDisplay: "620.000 đ",
-                brand: "BANDAI",
-                img: "🤖",
-                desc: "Robot nhảy múa thông minh thế hệ mới"
-            },
-            "3": {
-                name: "Ván Trượt Thể Thao Siêu Hạng",
-                price: 350000,
-                priceDisplay: "350.000 đ",
-                brand: "G4 STORE",
-                img: "🛹",
-                desc: "Ván trượt thể thao siêu hạng"
-            },
-            "4": {
-                name: "Bộ Phi Tiêu Nam Châm An Toàn",
-                price: 180000,
-                priceDisplay: "180.000 đ",
-                brand: "G4 STORE",
-                img: "🎯",
-                desc: "Bộ phi tiêu nam châm an toàn"
-            },
-            "5": {
-                name: "Lego City Máy Bay Cứu Hộ",
-                price: 390000,
-                priceDisplay: "390.000 đ",
-                brand: "LEGO",
-                img: "🧱",
-                desc: "Lego City Máy Bay Cứu Hộ"
-            }
+            "1": { name: "Xe Đua Địa Hình Cân Bằng", price: 450000, priceDisplay: "450.000 đ", brand: "HOT WHEELS", img: "🏎️", desc: "Xe đua địa hình cân bằng" },
+            "2": { name: "Robot Nhảy Múa Thông Minh", price: 620000, priceDisplay: "620.000 đ", brand: "BANDAI", img: "🤖", desc: "Robot nhảy múa thông minh" },
+            "3": { name: "Ván Trượt Thể Thao Siêu Hạng", price: 350000, priceDisplay: "350.000 đ", brand: "G4 STORE", img: "🛹", desc: "Ván trượt thể thao siêu hạng" },
+            "4": { name: "Bộ Phi Tiêu Nam Châm An Toàn", price: 180000, priceDisplay: "180.000 đ", brand: "G4 STORE", img: "🎯", desc: "Bộ phi tiêu nam châm" },
+            "5": { name: "Lego City Máy Bay Cứu Hộ", price: 390000, priceDisplay: "390.000 đ", brand: "LEGO", img: "🧱", desc: "Lego City Máy Bay Cứu Hộ" }
         };
 
         const VND_TO_USD_RATE = 25000;
         const API_BASE = "http://127.0.0.1:5000/api";
 
-        // ========================================
-        // ĐỌC PARAMS TỪ URL
-        // ========================================
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
         const quantity = parseInt(urlParams.get('qty')) || 1;
 
-        // ========================================
-        // RENDER TRANG CHECKOUT
-        // ========================================
         function formatVND(amount) {
             return amount.toLocaleString('vi-VN') + ' đ';
         }
@@ -961,10 +718,8 @@
             const product = catalogProducts[productId];
             const totalVND = product.price * quantity;
             const totalUSD = (totalVND / VND_TO_USD_RATE).toFixed(2);
-            const unitUSD = (product.price / VND_TO_USD_RATE).toFixed(2);
 
             container.innerHTML = `
-                <!-- LEFT: Order Summary -->
                 <div class="order-summary-card">
                     <h2 class="card-title"><i class="fa-solid fa-receipt"></i> Đơn Hàng Của Bạn</h2>
 
@@ -1008,7 +763,6 @@
                     </div>
                 </div>
 
-                <!-- RIGHT: Payment -->
                 <div class="payment-card">
                     <h2 class="card-title"><i class="fa-brands fa-paypal"></i> Thanh Toán PayPal</h2>
 
@@ -1021,16 +775,13 @@
                             </div>
                         </div>
 
-                        <!-- PayPal Buttons rendered here -->
                         <div id="paypal-button-container"></div>
 
-                        <!-- Loading state -->
                         <div class="payment-loading" id="paymentLoading">
                             <div class="spinner"></div>
                             <p>Đang xử lý thanh toán...</p>
                         </div>
 
-                        <!-- Error state -->
                         <div class="payment-error" id="paymentError">
                             <i class="fa-solid fa-triangle-exclamation"></i>
                             <p id="errorMessage">Có lỗi xảy ra. Vui lòng thử lại.</p>
@@ -1047,13 +798,9 @@
                 </div>
             `;
 
-            // Render PayPal buttons sau khi DOM đã sẵn sàng
             initPayPalButtons(product, totalVND, totalUSD);
         }
 
-        // ========================================
-        // PAYPAL SMART BUTTONS
-        // ========================================
         function initPayPalButtons(product, totalVND, totalUSD) {
             paypal.Buttons({
                 style: {
@@ -1063,76 +810,58 @@
                     label: 'paypal',
                     height: 50
                 },
-
-                // 1. Tạo đơn hàng khi bấm nút PayPal
-                createOrder: function(data, actions) {
+                createOrder: function (data, actions) {
                     showLoading(true);
-
                     return fetch(`${API_BASE}/paypal/create-order`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             product_name: product.name,
                             quantity: quantity,
                             price_vnd: product.price
                         })
                     })
-                    .then(function(res) { return res.json(); })
-                    .then(function(orderData) {
-                        showLoading(false);
-
-                        if (orderData.success) {
-                            return orderData.data.order_id;
-                        } else {
-                            throw new Error(orderData.message || 'Không thể tạo đơn hàng');
-                        }
-                    })
-                    .catch(function(err) {
-                        showLoading(false);
-                        showError(err.message);
-                        throw err;
-                    });
+                        .then(res => res.json())
+                        .then(orderData => {
+                            showLoading(false);
+                            if (orderData.success) {
+                                return orderData.data.order_id;
+                            } else {
+                                throw new Error(orderData.message || 'Không thể tạo đơn hàng');
+                            }
+                        })
+                        .catch(err => {
+                            showLoading(false);
+                            showError(err.message);
+                            throw err;
+                        });
                 },
-
-                // 2. Xác nhận thanh toán sau khi người dùng approve
-                onApprove: function(data, actions) {
+                onApprove: function (data, actions) {
                     showLoading(true);
-
                     return fetch(`${API_BASE}/paypal/capture-order`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            order_id: data.orderID
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ order_id: data.orderID })
+                    })
+                        .then(res => res.json())
+                        .then(captureData => {
+                            showLoading(false);
+                            if (captureData.success) {
+                                showSuccess(captureData.data);
+                            } else {
+                                showError(captureData.message || 'Thanh toán thất bại');
+                            }
                         })
-                    })
-                    .then(function(res) { return res.json(); })
-                    .then(function(captureData) {
-                        showLoading(false);
-
-                        if (captureData.success) {
-                            showSuccess(captureData.data);
-                        } else {
-                            showError(captureData.message || 'Thanh toán thất bại');
-                        }
-                    })
-                    .catch(function(err) {
-                        showLoading(false);
-                        showError('Lỗi xác nhận thanh toán: ' + err.message);
-                    });
+                        .catch(err => {
+                            showLoading(false);
+                            showError('Lỗi xác nhận thanh toán: ' + err.message);
+                        });
                 },
-
-                // 3. Xử lý khi người dùng hủy
-                onCancel: function(data) {
+                onCancel: function (data) {
                     showLoading(false);
                     console.log('Payment cancelled by user');
                 },
-
-                // 4. Xử lý lỗi
-                onError: function(err) {
+                onError: function (err) {
                     showLoading(false);
                     showError('Lỗi PayPal: ' + err.message);
                     console.error('PayPal Error:', err);
@@ -1140,9 +869,6 @@
             }).render('#paypal-button-container');
         }
 
-        // ========================================
-        // UI STATE HELPERS
-        // ========================================
         function showLoading(show) {
             const loader = document.getElementById('paymentLoading');
             const btnContainer = document.getElementById('paypal-button-container');
@@ -1170,22 +896,13 @@
 
         function showSuccess(paymentData) {
             const overlay = document.getElementById('successOverlay');
-            
-            // Populate success details
-            document.getElementById('successTxnId').textContent = 
-                paymentData.transaction_id || 'N/A';
-            document.getElementById('successPayerEmail').textContent = 
-                paymentData.payer_email || 'N/A';
-            document.getElementById('successAmount').textContent = 
-                '$' + (paymentData.amount || '0') + ' ' + (paymentData.currency || 'USD');
-
+            document.getElementById('successTxnId').textContent = paymentData.transaction_id || 'N/A';
+            document.getElementById('successPayerEmail').textContent = paymentData.payer_email || 'N/A';
+            document.getElementById('successAmount').textContent = '$' + (paymentData.amount || '0') + ' ' + (paymentData.currency || 'USD');
             overlay.classList.add('active');
         }
 
-        // ========================================
-        // KHỞI TẠO TRANG
-        // ========================================
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             renderCheckout();
         });
     </script>

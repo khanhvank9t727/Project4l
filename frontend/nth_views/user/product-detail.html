@@ -7,12 +7,17 @@
     <title>Chi Tiết Sản Phẩm - G4 ToyStore</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght=400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Nhúng CSS & JS Header/Navbar chung -->
+    <link rel="stylesheet" href="header-navbar.css">
+    <script src="header-navbar.js" defer></script>
 
     <style>
         /* CSS Cơ bản đồng bộ với Trang Chủ */
         :root {
-            --primary-color: #ff6b6b; /* Đỏ san hô */
-            --secondary-color: #4ecdc4; /* Xanh mint */
+            --primary-color: #ff6b6b;
+            /* Đỏ san hô */
+            --secondary-color: #4ecdc4;
+            /* Xanh mint */
             --text-color: #333333;
             --bg-light: #f5f7fa;
             --white: #ffffff;
@@ -35,167 +40,6 @@
         a {
             text-decoration: none;
             color: inherit;
-        }
-
-        /* --- HEADER TOP --- */
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 50px;
-            background-color: var(--white);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo h1 {
-            color: var(--primary-color);
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .search-bar {
-            display: flex;
-            width: 400px;
-        }
-
-        .search-bar input {
-            width: 100%;
-            padding: 10px 15px;
-            border: 2px solid #e0e0e0;
-            border-right: none;
-            border-radius: 20px 0 0 20px;
-            outline: none;
-            font-size: 0.95rem;
-        }
-
-        .search-bar input:focus {
-            border-color: var(--secondary-color);
-        }
-
-        .search-bar button {
-            padding: 10px 20px;
-            background-color: var(--secondary-color);
-            color: var(--white);
-            border: 2px solid var(--secondary-color);
-            border-radius: 0 20px 20px 0;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-
-        .search-bar button:hover {
-            background-color: #38b2ac;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .btn-login {
-            background-color: transparent;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-login:hover {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-cart {
-            background-color: var(--primary-color);
-            color: var(--white);
-            border: 2px solid var(--primary-color);
-        }
-
-        .btn-cart:hover {
-            background-color: #ee5253;
-        }
-
-        /* --- NAVBAR CHÍNH --- */
-        .main-nav {
-            background-color: var(--dark-navy);
-            padding: 0 50px;
-        }
-
-        .nav-list {
-            display: flex;
-            list-style: none;
-            gap: 35px;
-            align-items: center;
-        }
-
-        .nav-item {
-            position: relative;
-        }
-
-        .nav-item>a {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 15px 10px;
-            color: var(--white);
-            font-weight: 600;
-            transition: color 0.3s;
-        }
-
-        .nav-item:hover>a {
-            color: var(--secondary-color);
-        }
-
-        /* Dropdown Menu */
-        .dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background-color: var(--white);
-            min-width: 220px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 10px 10px;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-            z-index: 999;
-        }
-
-        .nav-item:hover .dropdown {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .dropdown li {
-            list-style: none;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .dropdown a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text-color);
-            transition: all 0.3s;
-        }
-
-        .dropdown a:hover {
-            background-color: #f8f9fa;
-            color: var(--primary-color);
-            padding-left: 25px;
         }
 
         /* --- BREADCRUMB (ĐƯỜNG DẪN LIÊN KẾT) --- */
@@ -472,12 +316,15 @@
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
+
             .product-gallery {
                 height: 320px;
             }
+
             .detail-name {
                 font-size: 1.8rem;
             }
+
             .action-group {
                 flex-direction: column;
             }
@@ -487,52 +334,9 @@
 
 <body>
 
-    <header class="header-top">
-        <div class="logo">
-            <a href="home.html">
-                <h1>🧸 G4 ToyStore</h1>
-            </a>
-        </div>
-
-        <form class="search-bar" action="#">
-            <input type="text" placeholder="Tìm kiếm đồ chơi, thương hiệu...">
-            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Tìm</button>
-        </form>
-
-        <div class="header-actions">
-            <a href="login.html" class="btn-action btn-login"><i class="fa-regular fa-user"></i> Đăng Nhập</a>
-            <a href="cart.html" class="btn-action btn-cart"><i class="fa-solid fa-cart-shopping"></i> Giỏ Hàng (0)</a>
-        </div>
-    </header>
-
-    <nav class="main-nav">
-        <ul class="nav-list">
-            <li class="nav-item"><a href="home.html"><i class="fa-solid fa-house"></i> Trang Chủ</a></li>
-            <li class="nav-item">
-                <a href="#"><i class="fa-solid fa-cubes"></i> Sản Phẩm <i class="fa-solid fa-chevron-down"></i></a>
-                <ul class="dropdown">
-                    <li><a href="products.html?cat=lap-rap">Đồ chơi lắp ráp</a></li>
-                    <li><a href="products.html?cat=bup-be">Búp bê & Phụ kiện</a></li>
-                    <li><a href="products.html?cat=thong-minh">Đồ chơi thông minh</a></li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="#"><i class="fa-solid fa-tags"></i> Thương Hiệu <i class="fa-solid fa-chevron-down"></i></a>
-                <ul class="dropdown">
-                    <li><a href="brands.html?b=lego">LEGO</a></li>
-                    <li><a href="brands.html?b=hotwheels">Hot Wheels</a></li>
-                    <li><a href="brands.html?b=mylittlepony">My Little Pony</a></li>
-                    <li><a href="brands.html?b=bandai">Bandai</a></li>
-                </ul>
-            </li>
-            <li class="nav-item" style="margin-left: auto;">
-                <a href="../admin/dashboard.html" style="color: #ffdd59; font-weight: 700;"><i class="fa-solid fa-gear"></i></a>
-            </li>
-        </ul>
-    </nav>
-
     <div class="breadcrumb">
-        <a href="home.html">Trang chủ</a> &gt; <span id="breadcrumbCategory">Danh mục</span> &gt; <span id="breadcrumbName" style="color: #333; font-weight: 600;">Sản phẩm</span>
+        <a href="home.html">Trang chủ</a> &gt; <span id="breadcrumbCategory">Danh mục</span> &gt; <span
+            id="breadcrumbName" style="color: #333; font-weight: 600;">Sản phẩm</span>
     </div>
 
     <main class="product-detail-container">
@@ -543,7 +347,7 @@
         <div class="product-info-panel">
             <div class="detail-brand" id="productBrand">G4 STORE</div>
             <h2 class="detail-name" id="productName">Tên sản phẩm đồ chơi cao cấp</h2>
-            
+
             <div class="detail-meta">
                 <span><i class="fa-solid fa-star"></i> 4.9 (48 đánh giá)</span>
                 <span>|</span>
@@ -556,7 +360,8 @@
             </div>
 
             <p class="detail-desc" id="productDesc">
-                Mô tả chi tiết sản phẩm đang được cập nhật. Sản phẩm được sản xuất từ chất liệu nhựa ABS nguyên sinh cao cấp, an toàn tuyệt đối cho sự phát triển toàn diện và khả năng tư duy của trẻ nhỏ.
+                Mô tả chi tiết sản phẩm đang được cập nhật. Sản phẩm được sản xuất từ chất liệu nhựa ABS nguyên sinh cao
+                cấp, an toàn tuyệt đối cho sự phát triển toàn diện và khả năng tư duy của trẻ nhỏ.
             </p>
 
             <div class="quantity-selector">
@@ -590,10 +395,10 @@
             <div class="footer-section">
                 <h4>Dịch Vụ Khách Hàng</h4>
                 <ul class="blog-list">
-                    <li><a href="policy.html?type=return">Chính sách đổi trả</a></li>
-                    <li><a href="policy.html?type=warranty">Chính sách bảo hành</a></li>
-                    <li><a href="guide.html">Hướng dẫn mua hàng</a></li>
-                    <li><a href="payment.html">Phương thức thanh toán</a></li>
+                    <li><a href="#">Chính sách đổi trả</a></li>
+                    <li><a href="#">Chính sách bảo hành</a></li>
+                    <li><a href="#">Hướng dẫn mua hàng</a></li>
+                    <li><a href="#">Phương thức thanh toán</a></li>
                 </ul>
             </div>
 
@@ -601,11 +406,11 @@
                 <h4>Góc Trẻ Thơ (Blog)</h4>
                 <ul class="blog-list">
                     <li>
-                        <a href="blog-detail.html?id=101">Cách chọn đồ chơi an toàn cho bé dưới 3 tuổi</a>
+                        <a href="#">Cách chọn đồ chơi an toàn cho bé dưới 3 tuổi</a>
                         <span class="blog-date">20/05/2026</span>
                     </li>
                     <li>
-                        <a href="blog-detail.html?id=102">LEGO City 2026: Có gì mới trong bộ sưu tập Hè?</a>
+                        <a href="#">LEGO City 2026: Có gì mới trong bộ sưu tập Hè?</a>
                         <span class="blog-date">15/05/2026</span>
                     </li>
                 </ul>
@@ -618,7 +423,7 @@
     </footer>
 
     <script>
-        // Giả lập Database danh sách sản phẩm để đồng bộ với Trang Chủ của bạn
+        // Giả lập Database đầy đủ danh sách sản phẩm để đồng bộ với Trang Chủ và Trang Cửa Hàng
         const catalogProducts = {
             "1": {
                 name: "Xe Đua Địa Hình Cân Bằng",
@@ -627,7 +432,7 @@
                 category: "Playground 2026",
                 brand: "HOT WHEELS",
                 img: "🏎️",
-                desc: "Xe đua địa hình cân bằng sở hữu hệ thống giảm xóc bánh lớn, động cơ mạnh mẽ và khả năng tự giữ thăng bằng cực đỉnh trên mọi địa hình hiểm trở. Thích hợp cho các hoạt động đua xe tương tác vận động ngoài trời."
+                desc: "Xe đua địa hình cân bằng sở hữu hệ thống giảm xóc bánh lớn, động cơ mạnh mẽ và khả năng tự giữ thăng bằng cực đỉnh trên mọi địa hình hiểm trở. Thích hợp cho các hoạt động đua xe tương tác vận động ngoài trời cho trẻ em."
             },
             "2": {
                 name: "Robot Nhảy Múa Thông Minh",
@@ -639,31 +444,103 @@
                 desc: "Robot nhảy múa thông minh thế hệ mới tích hợp cảm biến âm thanh và hệ thống đèn LED đa sắc màu nhấp nháy sinh động. Robot có thể thực hiện nhiều bước nhảy vui nhộn, kích thích tư duy nhạy bén và thính giác của bé."
             },
             "3": {
-                name: "Ván trượt Thể Thao Siêu Hạng",
+                name: "Ván Trượt Thể Thao Siêu Hạng",
                 price: "350.000 đ",
                 oldPrice: "",
                 category: "Playground 2026",
-                brand: "",
+                brand: "HOT WHEELS",
                 img: "🛹",
-                desc: "Ván trượt thể thao siêu hạng với thiết kế hiện đại, chất liệu cao cấp, mang lại trải nghiệm trượt tuyệt vời cho trẻ em."
+                desc: "Ván trượt thể thao siêu hạng với thiết kế hiện đại, chất liệu nhựa composite và hợp kim chịu lực cao cấp, mang lại trải nghiệm vận động thăng bằng lý tưởng và năng động cho trẻ em."
             },
-            "4" : {
-                name: "Bộ phi tiêu nam châm an toàn",
+            "4": {
+                name: "Bộ Phi Tiêu Nam Châm An Toàn",
                 price: "180.000 đ",
                 oldPrice: "",
                 category: "Playground 2026",
-                brand: "G4 STORE",
+                brand: "HOT WHEELS",
                 img: "🎯",
-                desc: "Bộ phi tiêu nam châm an toàn với thiết kế hiện đại, chất liệu cao cấp, mang lại trải nghiệm chơi tuyệt vời cho trẻ em."
+                desc: "Bộ phi tiêu nam châm thông minh, bảng mục tiêu phủ vải từ tính và các đầu phi tiêu bọc nam châm phẳng dẹt loại bỏ hoàn toàn nguy cơ chấn thương, giúp bé rèn luyện sự tinh mắt và khéo léo."
             },
-            "5" : {
-                name: "Lego City Máy Bay Cứu Hộ",
-                price: "390.000 đ",
+            "5": {
+                name: "Xe Scooter Điện Trẻ Em",
+                price: "1.250.000 đ",
                 oldPrice: "",
                 category: "Playground 2026",
+                brand: "BANDAI",
+                img: "🛴",
+                desc: "Xe Scooter điện trẻ em cao cấp sở hữu khung nhôm siêu nhẹ, phanh chân an toàn và hệ thống sạc điện tự động ngắt. Giúp bé có những buổi chiều vui chơi thể thao sảng khoái cùng bạn bè."
+            },
+            "6": {
+                name: "Lego Lâu Đài Cổ Tích 500 Mảnh",
+                price: "890.000 đ",
+                oldPrice: "1.100.000 đ",
+                category: "Thùng Gạch Sáng Tạo",
                 brand: "LEGO",
-                img: "🧱",
-                desc: "Lego City Máy Bay Cứu Hộ với thiết kế hiện đại, chất liệu cao cấp, mang lại trải nghiệm chơi tuyệt vời cho trẻ em."
+                img: "🏰",
+                desc: "Bộ lắp ráp Lego lâu đài cổ tích gồm 500 mảnh ghép tinh xảo, chất liệu nhựa nguyên sinh ABS an toàn tuyệt đối. Kích thích khả năng tưởng tượng phong phú, tính kiên nhẫn và kỹ năng giải quyết vấn đề."
+            },
+            "7": {
+                name: "Lego Phi Thuyền Không Gian",
+                price: "750.000 đ",
+                oldPrice: "900.000 đ",
+                category: "Thùng Gạch Sáng Tạo",
+                brand: "LEGO",
+                img: "🚀",
+                desc: "Khám phá vũ trụ bao la cùng phi thuyền không gian Lego hiện đại. Bộ lắp ráp thử thách tư duy không gian đa chiều, rèn luyện sự khéo tay tỉ mỉ và nuôi dưỡng niềm đam mê khoa học vũ trụ cho trẻ nhỏ."
+            },
+            "8": {
+                name: "Lâu Đài Cầu Vồng Pony",
+                price: "540.000 đ",
+                oldPrice: "650.000 đ",
+                category: "Mục Hot (Bán Chạy)",
+                brand: "MY LITTLE PONY",
+                img: "🏰",
+                desc: "Bộ đồ chơi lâu đài Pony lung linh sắc màu với nhiều chi tiết phòng ngủ, xích đu cầu vồng và phụ kiện nhỏ đi kèm. Là món quà hoàn hảo giúp các bé gái phát triển ngôn ngữ, khả năng nhập vai kể chuyện đáng yêu."
+            },
+            "9": {
+                name: "Bộ Trống Trẻ Em Sôi Động",
+                price: "320.000 đ",
+                oldPrice: "",
+                category: "Mục Hot (Bán Chạy)",
+                brand: "BANDAI",
+                img: "🪘",
+                desc: "Bộ trống gõ trẻ em phát nhạc chất lượng cao với âm thanh giòn giã mô phỏng nhạc cụ thực tế giúp bé khám phá nhịp điệu phong phú, rèn luyện tư duy nghệ thuật âm nhạc sớm một cách lành mạnh."
+            },
+            "11": {
+                name: "Gấu Bông Khổng Lồ Đáng Yêu",
+                price: "199.000 đ",
+                oldPrice: "350.000 đ",
+                category: "Quà To Giá Nhỏ",
+                brand: "MY LITTLE PONY",
+                img: "🧸",
+                desc: "Chú gấu bông size siêu lớn với chất liệu bông xoắn 3D cực mềm mại, đàn hồi tốt và lớp vỏ nhung mịn không rụng lông, an toàn với làn da nhạy cảm của bé khi ôm ngủ hoặc vui chơi."
+            },
+            "12": {
+                name: "Bộ Thẻ Học Tư Duy Cho Bé",
+                price: "95.000 đ",
+                oldPrice: "150.000 đ",
+                category: "Quà To Giá Nhỏ",
+                brand: "BANDAI",
+                img: "🧩",
+                desc: "Thẻ học flashcard thông minh kết hợp tranh vẽ sinh động giúp nâng cao vốn từ vựng song ngữ Anh - Việt, nhận diện đồ vật, con vật và hiện tượng xung quanh hiệu quả cho bé từ 1 đến 6 tuổi."
+            },
+            "13": {
+                name: "Hộp Màu Vẽ Đa Năng 48 Món",
+                price: "75.000 đ",
+                oldPrice: "120.000 đ",
+                category: "Quà To Giá Nhỏ",
+                brand: "BANDAI",
+                img: "🎨",
+                desc: "Bộ màu vẽ đa năng bao gồm đầy đủ bút lông màu, sáp màu dầu, màu nước và bút chì vẽ cao cấp được xếp gọn gàng trong hộp khóa vali xinh xắn, thỏa sức cho trí tưởng tượng nghệ thuật của họa sĩ nhí."
+            },
+            "14": {
+                name: "Mô Hình Ngựa Pony Thần Kỳ",
+                price: "150.000 đ",
+                oldPrice: "250.000 đ",
+                category: "Quà To Giá Nhỏ",
+                brand: "MY LITTLE PONY",
+                img: "🦄",
+                desc: "Chú ngựa Pony xinh xắn nổi tiếng có chiếc sừng thần kỳ phát sáng dịu nhẹ và bộ bờm tóc bảy sắc cầu vồng óng mượt mà bé có thể tự tay tạo kiểu, tết tóc theo sở thích sáng tạo riêng."
             }
         };
 
@@ -677,24 +554,29 @@
         }
 
         // Đọc tham số Query string từ URL (Ví dụ: product-detail.html?id=1)
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
 
             // Nếu tồn tại id sản phẩm trong cơ sở dữ liệu giả lập
             if (productId && catalogProducts[productId]) {
                 const item = catalogProducts[productId];
-                
+
                 // Đổ dữ liệu vào giao diện HTML công khai
                 document.getElementById('productName').innerText = item.name;
                 document.getElementById('breadcrumbName').innerText = item.name;
                 document.getElementById('productPrice').innerText = item.price;
-                document.getElementById('productOldPrice').innerText = item.oldPrice;
-                document.getElementById('productBrand').innerText = item.brand;
+                if (item.oldPrice) {
+                    document.getElementById('productOldPrice').innerText = item.oldPrice;
+                    document.getElementById('productOldPrice').style.display = "inline";
+                } else {
+                    document.getElementById('productOldPrice').style.display = "none";
+                }
+                document.getElementById('productBrand').innerText = item.brand || "G4 STORE";
                 document.getElementById('productImg').innerText = item.img;
                 document.getElementById('productDesc').innerText = item.desc;
                 document.getElementById('breadcrumbCategory').innerText = item.category;
-                
+
                 // Cập nhật lại tiêu đề trang <title> theo tên sản phẩm
                 document.title = item.name + " - G4 ToyStore";
             } else {
@@ -704,12 +586,13 @@
                 document.getElementById('breadcrumbCategory').innerText = "Đồ Chơi G4";
             }
         });
-        // Hàm Mua Ngay - chuyển đến trang thanh toán PayPal
+
+        // Hàm Mua Ngay - chuyển đến trang thanh toán PayPal hoặc Checkout
         function buyNow() {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id') || '1';
             const quantity = document.getElementById('quantityInput').value || 1;
-            
+
             window.location.href = `checkout.html?id=${productId}&qty=${quantity}`;
         }
     </script>

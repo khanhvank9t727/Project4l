@@ -10,13 +10,17 @@
     <link rel="stylesheet" href="header-navbar.css">
     <script src="header-navbar.js" defer></script>
 
+    <script src="../../assets/js/shared/config.js"></script>
+    <script src="../../assets/js/shared/storage.js"></script>
+    <script src="../../assets/js/shared/api_client.js"></script>
+
     <style>
         :root {
-            --primary-color: #ff6b6b;
-            --secondary-color: #4ecdc4;
-            --dark-blue: #2c3e50;
-            --text-color: #333333;
-            --bg-light: #f5f7fa;
+            --primary-color: #111111;
+            --secondary-color: #666666;
+            --dark-blue: #111111;
+            --text-color: #1a1a1a;
+            --bg-light: #f9f9f9;
             --white: #ffffff;
             --border-color: #e2e8f0;
         }
@@ -250,7 +254,7 @@
         }
 
         .btn-checkout:hover {
-            background: #ff5252;
+            background: var(--secondary-color);
         }
 
         .btn-continue {
@@ -333,16 +337,24 @@
     </div>
 
     <script>
-        // Mảng Mock Data mô phỏng giỏ hàng được lưu trữ (sau này bạn có thể lưu bằng localStorage)
-        let cartData = [
-            { id: 1, name: "Xe Đua Địa Hình Cân Bằng", brand: "Hot Wheels", price: 450000, img: "🏎️", quantity: 1 },
-            { id: 2, name: "Robot Nhảy Múa Thông Minh", brand: "Bandai", price: 620000, img: "🤖", quantity: 2 },
-            { id: 3, name: "Lego Lâu Đài Cổ Tích 500 Chi Tiết", brand: "LEGO", price: 890000, img: "🏰", quantity: 1 }
-        ];
-
+        let cartData = [];
         const SHIPPING_FEE = 30000;
 
         // 1. HÀM VẼ GIAO DIỆN GIỎ HÀNG (RENDER CART)
+        async function fetchAndRenderCart() {
+            try {
+                const res = await apiRequest("/cart/", "GET", null, true);
+                cartData = res.data.items || [];
+                renderCart();
+            } catch (error) {
+                console.error("Lỗi lấy giỏ hàng:", error);
+                if (error.message.includes("Token") || error.message.includes("Expired") || error.message.includes("Missing")) {
+                    alert("Vui lòng đăng nhập để xem giỏ hàng!");
+                    window.location.href = "login.html";
+                }
+            }
+        }
+
         function renderCart() {
             const wrapper = document.getElementById("cart-items-wrapper");
             const emptyView = document.getElementById("empty-view");
@@ -370,21 +382,27 @@
 
             cartData.forEach(item => {
                 totalItems += item.quantity;
-                subtotal += item.price * item.quantity;
+                subtotal += item.item_total;
+
+                let img = '🎁';
+                if (item.name.toLowerCase().includes('xe')) img = '🏎️';
+                if (item.name.toLowerCase().includes('gấu')) img = '🧸';
+                if (item.name.toLowerCase().includes('robot')) img = '🤖';
+                if (item.name.toLowerCase().includes('lego')) img = '🏰';
 
                 wrapper.innerHTML += `
                     <div class="cart-item">
-                        <div class="item-img">${item.img}</div>
+                        <div class="item-img">${img}</div>
                         <div class="item-info">
                             <h4>${item.name}</h4>
-                            <p>${item.brand}</p>
+                            <p>Mã SP: ${item.product_id}</p>
                         </div>
                         <div class="quantity-control">
-                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, -1, ${item.quantity})">-</button>
                             <input type="text" class="quantity-input" value="${item.quantity}" readonly>
-                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                            <button class="quantity-btn" onclick="updateQuantity(${item.id}, 1, ${item.quantity})">+</button>
                         </div>
-                        <div class="item-price">${(item.price * item.quantity).toLocaleString('vi-VN')} đ</div>
+                        <div class="item-price">${item.item_total.toLocaleString('vi-VN')} đ</div>
                         <button class="btn-remove" onclick="removeCartItem(${item.id})">🗑️</button>
                     </div>
                 `;
@@ -399,38 +417,41 @@
         }
 
         // 2. HÀM TĂNG / GIẢM SỐ LƯỢNG
-        function updateQuantity(id, change) {
-            const item = cartData.find(p => p.id === id);
-            if (item) {
-                item.quantity += change;
-
-                // Nếu giảm xuống bằng 0 thì tiến hành xóa luôn khỏi giỏ
-                if (item.quantity <= 0) {
-                    removeCartItem(id);
-                    return;
-                }
-                renderCart();
+        async function updateQuantity(id, change, currentQuantity) {
+            const newQuantity = currentQuantity + change;
+            if (newQuantity <= 0) {
+                removeCartItem(id);
+                return;
+            }
+            try {
+                await apiRequest(`/cart/${id}`, "PUT", { quantity: newQuantity }, true);
+                fetchAndRenderCart();
+            } catch (error) {
+                console.error("Lỗi cập nhật số lượng:", error);
+                alert("Lỗi cập nhật số lượng: " + error.message);
             }
         }
 
         // 3. HÀM XÓA SẢN PHẨM KHỎI GIỎ
-        function removeCartItem(id) {
-            const item = cartData.find(p => p.id === id);
-            if (confirm(`Bạn muốn bỏ sản phẩm "${item.name}" ra khỏi giỏ hàng?`)) {
-                cartData = cartData.filter(p => p.id !== id);
-                renderCart();
+        async function removeCartItem(id) {
+            if (confirm(`Bạn muốn bỏ sản phẩm này ra khỏi giỏ hàng?`)) {
+                try {
+                    await apiRequest(`/cart/${id}`, "DELETE", null, true);
+                    fetchAndRenderCart();
+                } catch (error) {
+                    console.error("Lỗi xóa sản phẩm:", error);
+                    alert("Lỗi xóa sản phẩm: " + error.message);
+                }
             }
         }
 
         // 4. HÀM ĐẶT HÀNG THANH TOÁN
         function proceedToCheckout() {
-            alert("Hệ thống G4 ToyStore đã ghi nhận đơn hàng của bạn thành công! Cảm ơn bạn đã mua sắm.");
-            cartData = []; // Clear giỏ hàng sau khi thanh toán thành công
-            renderCart();
+            window.location.href = "checkout.html";
         }
 
         // Khởi động chạy render giỏ hàng ngay khi mở trang
-        window.onload = renderCart;
+        window.onload = fetchAndRenderCart;
 
         function checkLoginNavbar() {
             // Đọc dữ liệu user từ localStorage

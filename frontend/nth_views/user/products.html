@@ -247,100 +247,119 @@
         <p>&copy; 2026 G4 ToyStore - Hệ thống View tổng hợp đa năng</p>
     </footer>
 
+    <script src="../../assets/js/shared/config.js"></script>
+    <script src="../../assets/js/shared/storage.js"></script>
+    <script src="../../assets/js/shared/api_client.js"></script>
+    <script src="../../assets/js/shared/product_api.js"></script>
+
     <script>
-        // Kho dữ liệu tổng hợp đầy đủ thuộc tính category và brand (Đồng bộ với home.html và product-detail.html)
-        const mockDatabase = [
-            { id: 1, category: 'playground-2026', brand: 'hotwheels', name: 'Xe Đua Địa Hình Cân Bằng', price: '450.000 đ', img: '🏎️' },
-            { id: 2, category: 'playground-2026', brand: 'bandai', name: 'Robot Nhảy Múa Thông Minh', price: '620.000 đ', img: '🤖' },
-            { id: 3, category: 'playground-2026', brand: 'hotwheels', name: 'Ván Trượt Thể Thao Siêu Hạng', price: '350.000 đ', img: '🛹' },
-            { id: 4, category: 'playground-2026', brand: 'hotwheels', name: 'Bộ Phi Tiêu Nam Châm An Toàn', price: '180.000 đ', img: '🎯' },
-            { id: 5, category: 'playground-2026', brand: 'bandai', name: 'Xe Scooter Điện Trẻ Em', price: '1.250.000 đ', img: '🛴' },
-
-            { id: 11, category: 'qua-to-gia-nho', brand: 'mylittlepony', name: 'Gấu Bông Khổng Lồ Đáng Yêu', price: '199.000 đ', img: '🧸' },
-            { id: 12, category: 'qua-to-gia-nho', brand: 'bandai', name: 'Bộ Thẻ Học Tư Duy Cho Bé', price: '95.000 đ', img: '🧩' },
-            { id: 13, category: 'qua-to-gia-nho', brand: 'bandai', name: 'Hộp Màu Vẽ Đa Năng 48 Món', price: '75.000 đ', img: '🎨' },
-            { id: 14, category: 'qua-to-gia-nho', brand: 'mylittlepony', name: 'Mô Hình Ngựa Pony Thần Kỳ', price: '150.000 đ', img: '🦄' },
-
-            { id: 6, category: 'thung-gach-sang-tao', brand: 'lego', name: 'Lego Lâu Đài Cổ Tích 500 Mảnh', price: '890.000 đ', img: '🏰' },
-            { id: 7, category: 'thung-gach-sang-tao', brand: 'lego', name: 'Lego Phi Thuyền Không Gian', price: '750.000 đ', img: '🚀' },
-
-            { id: 8, category: 'muc-hot', brand: 'mylittlepony', name: 'Lâu Đài Cầu Vồng Pony', price: '540.000 đ', img: '🏰' },
-            { id: 9, category: 'muc-hot', brand: 'bandai', name: 'Bộ Trống Trẻ Em Sôi Động', price: '320.000 đ', img: '🪘' }
-        ];
-
-        // Từ điển cấu hình Tiêu đề / Mô tả hiển thị
+        // Từ điển cấu hình Tiêu đề / Mô tả hiển thị (sẽ được thay thế bởi API Categories)
         const infoConfig = {
             'all': { title: 'Tất Cả Sản Phẩm', desc: 'Duyệt xem toàn bộ các sản phẩm có tại cửa hàng.' },
-            'playground-2026': { title: 'Playground 2026', desc: 'Bộ sưu tập đồ chơi vận động thế hệ mới.' },
-            'qua-to-gia-nho': { title: 'Quà To Giá Nhỏ', desc: 'Món quà ý nghĩa với chi phí cực kỳ tiết kiệm.' },
-            'thung-gach-sang-tao': { title: 'Thùng Gạch Sáng Tạo', desc: 'Kích thích trí não cùng những khối hình ghép Lego.' },
-            'muc-hot': { title: 'Mục Hot (Bán Chạy)', desc: 'Top sản phẩm được các bé săn lùng nhiều nhất.' },
-
             'lego': { title: 'Thương Hiệu: LEGO', desc: 'Thế giới lắp ráp sáng tạo đỉnh cao từ Đan Mạch.' },
             'hotwheels': { title: 'Thương Hiệu: HOT WHEELS', desc: 'Những mô hình quái xế đường đua bốc lửa.' },
             'mylittlepony': { title: 'Thương Hiệu: MY LITTLE PONY', desc: 'Những chú ngựa sắc màu bước ra từ câu chuyện cổ tích.' },
             'bandai': { title: 'Thương Hiệu: BANDAI', desc: 'Mô hình nhân vật và đồ chơi công nghệ cao Nhật Bản.' }
         };
 
-        function initPage() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const catParam = urlParams.get('cat');
-            const brandParam = urlParams.get('brand');
+        // Cache category data to display names
+        let categoryMap = {};
 
-            let renderList = [];
-            let currentKey = 'all';
-
-            // Xoá tất cả class active cũ ở Sidebar
-            document.querySelectorAll('.filter-link').forEach(el => el.classList.remove('active'));
-
-            // Trường hợp 1: Lọc theo Thương hiệu (?brand=...)
-            if (brandParam && infoConfig[brandParam]) {
-                currentKey = brandParam;
-                renderList = mockDatabase.filter(item => item.brand === brandParam);
-
-                const activeEl = document.querySelector(`.filter-link[data-brand="${brandParam}"]`);
-                if (activeEl) activeEl.classList.add('active');
+        async function initPage() {
+            try {
+                // Fetch Categories
+                const catRes = await apiRequest("/categories");
+                if (catRes && catRes.data) {
+                    catRes.data.forEach(c => {
+                        categoryMap[c.id] = c.name;
+                        infoConfig[c.id] = { title: c.name, desc: c.description };
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to load categories", err);
             }
-            // Trường hợp 2: Lọc theo Danh mục (?cat=...) hoặc Mặc định hiển thị hết
-            else {
-                currentKey = (catParam && infoConfig[catParam]) ? catParam : 'all';
 
-                if (currentKey === 'all') {
-                    renderList = mockDatabase;
-                } else {
-                    renderList = mockDatabase.filter(item => item.category === currentKey);
+            try {
+                // Fetch Products
+                const res = await fetchProducts();
+                let productList = res.data || [];
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const catParam = urlParams.get('cat');
+                const brandParam = urlParams.get('brand');
+
+                let renderList = [];
+                let currentKey = 'all';
+
+                // Xoá tất cả class active cũ ở Sidebar
+                document.querySelectorAll('.filter-link').forEach(el => el.classList.remove('active'));
+
+                // Trường hợp 1: Lọc theo Thương hiệu (?brand=...) - Backend có thể dùng brand_id
+                if (brandParam) {
+                    currentKey = brandParam;
+                    // Lọc tạm bằng ID (nếu brandParam là ID) hoặc name (nếu frontend vẫn dùng text)
+                    // Hiện tại mockup dùng text ('lego', 'bandai'), nhưng backend lưu brand_id integer.
+                    // Tạm thời hiển thị tất cả nếu chưa map được brand_id
+                    renderList = productList; 
+                    const activeEl = document.querySelector(`.filter-link[data-brand="${brandParam}"]`);
+                    if (activeEl) activeEl.classList.add('active');
+                }
+                // Trường hợp 2: Lọc theo Danh mục (?cat=...)
+                else {
+                    if (catParam && catParam !== 'all') {
+                        // catParam có thể là ID (vd: 1, 2, 3) hoặc slug cũ ('playground-2026').
+                        // Chúng ta sẽ giả định url filter mới sử dụng ID.
+                        currentKey = catParam;
+                        renderList = productList.filter(item => item.category_id == catParam);
+                    } else {
+                        currentKey = 'all';
+                        renderList = productList;
+                    }
+
+                    const activeEl = document.querySelector(`.filter-link[data-cat="${currentKey}"]`);
+                    if (activeEl) activeEl.classList.add('active');
                 }
 
-                const activeEl = document.querySelector(`.filter-link[data-cat="${currentKey}"]`);
-                if (activeEl) activeEl.classList.add('active');
+                // Ghi nội dung tiêu đề danh mục lên View
+                if (infoConfig[currentKey]) {
+                    document.getElementById('category-name').innerText = infoConfig[currentKey].title;
+                    document.getElementById('category-desc').innerText = infoConfig[currentKey].desc;
+                } else {
+                    document.getElementById('category-name').innerText = "Sản phẩm";
+                    document.getElementById('category-desc').innerText = "";
+                }
+
+                // Thực hiện đổ dữ liệu vào Grid html
+                const grid = document.getElementById('products-render');
+                grid.innerHTML = '';
+
+                if (renderList.length === 0) {
+                    grid.innerHTML = `<div class="no-products"><h3>Hiện chưa có mặt hàng nào thuộc nhóm này!</h3></div>`;
+                    return;
+                }
+
+                renderList.forEach(item => {
+                    const priceFormatted = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price);
+                    // Dùng emoji làm placeholder hình ảnh
+                    let img = '🎁';
+                    if (item.name.toLowerCase().includes('xe')) img = '🏎️';
+                    if (item.name.toLowerCase().includes('gấu')) img = '🧸';
+                    
+                    grid.innerHTML += `
+                        <a href="product-detail.html?id=${item.id}" class="product-card">
+                            <div class="product-img">${img}</div>
+                            <div>
+                                <span class="product-brand-tag">Brand ${item.brand_id || 'Other'}</span>
+                                <h4 class="product-name">${item.name}</h4>
+                                <p class="product-price">${priceFormatted}</p>
+                            </div>
+                        </a>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error loading products:", error);
+                document.getElementById('products-render').innerHTML = `<div class="no-products"><h3>Lỗi tải dữ liệu sản phẩm!</h3></div>`;
             }
-
-            // Ghi nội dung tiêu đề danh mục lên View
-            document.getElementById('category-name').innerText = infoConfig[currentKey].title;
-            document.getElementById('category-desc').innerText = infoConfig[currentKey].desc;
-
-            // Thực hiện đổ dữ liệu vào Grid html
-            const grid = document.getElementById('products-render');
-            grid.innerHTML = '';
-
-            if (renderList.length === 0) {
-                grid.innerHTML = `<div class="no-products"><h3>Hiện chưa có mặt hàng nào thuộc nhóm này!</h3></div>`;
-                return;
-            }
-
-            // Cập nhật: thẻ cha của sản phẩm đổi thành thẻ <a> liên kết đến product-detail.html kèm ID tương ứng
-            renderList.forEach(item => {
-                grid.innerHTML += `
-                    <a href="product-detail.html?id=${item.id}" class="product-card">
-                        <div class="product-img">${item.img}</div>
-                        <div>
-                            <span class="product-brand-tag">${item.brand}</span>
-                            <h4 class="product-name">${item.name}</h4>
-                            <p class="product-price">${item.price}</p>
-                        </div>
-                    </a>
-                `;
-            });
         }
 
         // Đăng ký sự kiện an toàn khi DOM sẵn sàng

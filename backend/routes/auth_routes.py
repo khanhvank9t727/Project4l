@@ -16,6 +16,10 @@ from models.user_model import G4User
 
 from services.jwt_services import generate_tokens
 
+from utils.response import success_response, error_response
+from utils.validators import is_valid_email, is_strong_password
+from utils.constants import ROLE_LOCKED, ROLE_CUSTOMER, AUTH_PROVIDER_LOCAL, AUTH_PROVIDER_GOOGLE
+
 import bcrypt
 
 auth_routes = Blueprint(
@@ -32,30 +36,30 @@ def register():
     data = request.get_json(silent=True)
 
     if not data:
-
-        return jsonify({
-            "message": "Invalid JSON"
-        }), 400
+        return error_response("Invalid JSON", 400)
 
     email = data.get("email")
     password = data.get("password")
     full_name = data.get("full_name")
 
     if not email or not password or not full_name:
+        return error_response("Missing required fields", 400)
 
-        return jsonify({
-            "message": "Missing required fields"
-        }), 400
+    if not is_valid_email(email):
+        return error_response("Email không hợp lệ", 400)
+
+    if not is_strong_password(password):
+        return error_response(
+            "Mật khẩu phải có ít nhất 6 ký tự, gồm chữ hoa, chữ thường và số",
+            400
+        )
 
     existing_user = G4User.query.filter_by(
         HKKM_Email=email
     ).first()
 
     if existing_user:
-
-        return jsonify({
-            "message": "Email already exists"
-        }), 400
+        return error_response("Email already exists", 400)
 
     hashed_password = bcrypt.hashpw(
         password.encode("utf-8"),
@@ -63,23 +67,16 @@ def register():
     ).decode("utf-8")
 
     new_user = G4User(
-
         HKKM_Email=email,
-
         HKKM_Password_Hash=hashed_password,
-
         HKKM_Full_Name=full_name,
-
-        HKKM_Auth_Provider="LOCAL"
+        HKKM_Auth_Provider=AUTH_PROVIDER_LOCAL
     )
 
     db.session.add(new_user)
-
     db.session.commit()
 
-    return jsonify({
-        "message": "Register successful"
-    }), 201
+    return success_response("Register successful", None, 201)
 
 @auth_routes.route(
     "/login",
@@ -90,40 +87,47 @@ def login():
     data = request.get_json(silent=True)
 
     if not data:
-
-        return jsonify({
-            "message": "Invalid JSON"
-        }), 400
+        return error_response("Invalid JSON", 400)
 
     email = data.get("email")
     password = data.get("password")
 
     if not email or not password:
-
-        return jsonify({
-            "message": "Email and password required"
-        }), 400
+        return error_response("Email and password required", 400)
 
     user = G4User.query.filter_by(
         HKKM_Email=email
     ).first()
 
     if not user:
+        return error_response("Invalid email or password", 401)
 
-        return jsonify({
-            "message": "Invalid email or password"
-        }), 401
+    # Kiểm tra tài khoản bị khóa
+    if user.HKKM_Role == ROLE_LOCKED:
+        return error_response(
+            "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin.",
+            403
+        )
 
-    password_valid = bcrypt.checkpw(
-        password.encode("utf-8"),
-        user.HKKM_Password_Hash.encode("utf-8")
-    )
+    if not user.HKKM_Password_Hash:
+        return error_response(
+            "Please login with your Google account",
+            401
+        )
+
+    try:
+        password_valid = bcrypt.checkpw(
+            password.encode("utf-8"),
+            user.HKKM_Password_Hash.encode("utf-8")
+        )
+    except ValueError:
+        return error_response(
+            "Invalid password format in database",
+            500
+        )
 
     if not password_valid:
-
-        return jsonify({
-            "message": "Invalid email or password"
-        }), 401
+        return error_response("Invalid email or password", 401)
 
     tokens = generate_tokens(user)
 
@@ -163,18 +167,12 @@ def google_login():
     )
 
     if not data:
-
-        return jsonify({
-            "message": "Invalid JSON"
-        }), 400
+        return error_response("Invalid JSON", 400)
 
     google_token = data.get("token")
 
     if not google_token:
-
-        return jsonify({
-            "message": "Google token required"
-        }), 400
+        return error_response("Google token required", 400)
 
     try:
 
@@ -195,6 +193,13 @@ def google_login():
             HKKM_Email=email
         ).first()
 
+        # Kiểm tra tài khoản bị khóa
+        if user and user.HKKM_Role == ROLE_LOCKED:
+            return error_response(
+                "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ admin.",
+                403
+            )
+
         if not user:
 
             user = G4User(
@@ -206,7 +211,7 @@ def google_login():
                     "Google User"
                 ),
 
-                HKKM_Auth_Provider="GOOGLE",
+                HKKM_Auth_Provider=AUTH_PROVIDER_GOOGLE,
 
                 HKKM_Provider_Id=user_info["sub"],
 
@@ -250,9 +255,7 @@ def google_login():
 
     except Exception:
 
-        return jsonify({
-            "message": "Invalid Google token"
-        }), 401
+        return error_response("Invalid Google token", 401)
 
 @auth_routes.route(
     "/refresh",
@@ -263,7 +266,17 @@ def refresh():
 
     user_id = get_jwt_identity()
 
-    user = G4User.query.get(user_id)
+    user = db.session.get(G4User, user_id)
+
+    if not user:
+        return error_response("User not found", 404)
+
+    # Kiểm tra tài khoản bị khóa khi refresh
+    if user.HKKM_Role == ROLE_LOCKED:
+        return error_response(
+            "Tài khoản của bạn đã bị khóa.",
+            403
+        )
 
     tokens = generate_tokens(user)
 

@@ -11,6 +11,11 @@
     <link rel="stylesheet" href="header-navbar.css">
     <script src="header-navbar.js" defer></script>
 
+    <script src="../../assets/js/shared/config.js"></script>
+    <script src="../../assets/js/shared/storage.js"></script>
+    <script src="../../assets/js/shared/api_client.js"></script>
+    <script src="../../assets/js/shared/product_api.js"></script>
+
     <style>
         /* CSS Cơ bản đồng bộ với Trang Chủ */
         :root {
@@ -374,7 +379,7 @@
             </div>
 
             <div class="action-group">
-                <button class="btn-add-to-cart" onclick="alert('Đã thêm sản phẩm vào giỏ hàng thành công!')">
+                <button class="btn-add-to-cart" onclick="addToCart()">
                     <i class="fa-solid fa-cart-plus"></i> Thêm Vào Giỏ
                 </button>
                 <button class="btn-buy-now" onclick="buyNow()">Mua Ngay</button>
@@ -423,127 +428,6 @@
     </footer>
 
     <script>
-        // Giả lập Database đầy đủ danh sách sản phẩm để đồng bộ với Trang Chủ và Trang Cửa Hàng
-        const catalogProducts = {
-            "1": {
-                name: "Xe Đua Địa Hình Cân Bằng",
-                price: "450.000 đ",
-                oldPrice: "",
-                category: "Playground 2026",
-                brand: "HOT WHEELS",
-                img: "🏎️",
-                desc: "Xe đua địa hình cân bằng sở hữu hệ thống giảm xóc bánh lớn, động cơ mạnh mẽ và khả năng tự giữ thăng bằng cực đỉnh trên mọi địa hình hiểm trở. Thích hợp cho các hoạt động đua xe tương tác vận động ngoài trời cho trẻ em."
-            },
-            "2": {
-                name: "Robot Nhảy Múa Thông Minh",
-                price: "620.000 đ",
-                oldPrice: "",
-                category: "Playground 2026",
-                brand: "BANDAI",
-                img: "🤖",
-                desc: "Robot nhảy múa thông minh thế hệ mới tích hợp cảm biến âm thanh và hệ thống đèn LED đa sắc màu nhấp nháy sinh động. Robot có thể thực hiện nhiều bước nhảy vui nhộn, kích thích tư duy nhạy bén và thính giác của bé."
-            },
-            "3": {
-                name: "Ván Trượt Thể Thao Siêu Hạng",
-                price: "350.000 đ",
-                oldPrice: "",
-                category: "Playground 2026",
-                brand: "HOT WHEELS",
-                img: "🛹",
-                desc: "Ván trượt thể thao siêu hạng với thiết kế hiện đại, chất liệu nhựa composite và hợp kim chịu lực cao cấp, mang lại trải nghiệm vận động thăng bằng lý tưởng và năng động cho trẻ em."
-            },
-            "4": {
-                name: "Bộ Phi Tiêu Nam Châm An Toàn",
-                price: "180.000 đ",
-                oldPrice: "",
-                category: "Playground 2026",
-                brand: "HOT WHEELS",
-                img: "🎯",
-                desc: "Bộ phi tiêu nam châm thông minh, bảng mục tiêu phủ vải từ tính và các đầu phi tiêu bọc nam châm phẳng dẹt loại bỏ hoàn toàn nguy cơ chấn thương, giúp bé rèn luyện sự tinh mắt và khéo léo."
-            },
-            "5": {
-                name: "Xe Scooter Điện Trẻ Em",
-                price: "1.250.000 đ",
-                oldPrice: "",
-                category: "Playground 2026",
-                brand: "BANDAI",
-                img: "🛴",
-                desc: "Xe Scooter điện trẻ em cao cấp sở hữu khung nhôm siêu nhẹ, phanh chân an toàn và hệ thống sạc điện tự động ngắt. Giúp bé có những buổi chiều vui chơi thể thao sảng khoái cùng bạn bè."
-            },
-            "6": {
-                name: "Lego Lâu Đài Cổ Tích 500 Mảnh",
-                price: "890.000 đ",
-                oldPrice: "1.100.000 đ",
-                category: "Thùng Gạch Sáng Tạo",
-                brand: "LEGO",
-                img: "🏰",
-                desc: "Bộ lắp ráp Lego lâu đài cổ tích gồm 500 mảnh ghép tinh xảo, chất liệu nhựa nguyên sinh ABS an toàn tuyệt đối. Kích thích khả năng tưởng tượng phong phú, tính kiên nhẫn và kỹ năng giải quyết vấn đề."
-            },
-            "7": {
-                name: "Lego Phi Thuyền Không Gian",
-                price: "750.000 đ",
-                oldPrice: "900.000 đ",
-                category: "Thùng Gạch Sáng Tạo",
-                brand: "LEGO",
-                img: "🚀",
-                desc: "Khám phá vũ trụ bao la cùng phi thuyền không gian Lego hiện đại. Bộ lắp ráp thử thách tư duy không gian đa chiều, rèn luyện sự khéo tay tỉ mỉ và nuôi dưỡng niềm đam mê khoa học vũ trụ cho trẻ nhỏ."
-            },
-            "8": {
-                name: "Lâu Đài Cầu Vồng Pony",
-                price: "540.000 đ",
-                oldPrice: "650.000 đ",
-                category: "Mục Hot (Bán Chạy)",
-                brand: "MY LITTLE PONY",
-                img: "🏰",
-                desc: "Bộ đồ chơi lâu đài Pony lung linh sắc màu với nhiều chi tiết phòng ngủ, xích đu cầu vồng và phụ kiện nhỏ đi kèm. Là món quà hoàn hảo giúp các bé gái phát triển ngôn ngữ, khả năng nhập vai kể chuyện đáng yêu."
-            },
-            "9": {
-                name: "Bộ Trống Trẻ Em Sôi Động",
-                price: "320.000 đ",
-                oldPrice: "",
-                category: "Mục Hot (Bán Chạy)",
-                brand: "BANDAI",
-                img: "🪘",
-                desc: "Bộ trống gõ trẻ em phát nhạc chất lượng cao với âm thanh giòn giã mô phỏng nhạc cụ thực tế giúp bé khám phá nhịp điệu phong phú, rèn luyện tư duy nghệ thuật âm nhạc sớm một cách lành mạnh."
-            },
-            "11": {
-                name: "Gấu Bông Khổng Lồ Đáng Yêu",
-                price: "199.000 đ",
-                oldPrice: "350.000 đ",
-                category: "Quà To Giá Nhỏ",
-                brand: "MY LITTLE PONY",
-                img: "🧸",
-                desc: "Chú gấu bông size siêu lớn với chất liệu bông xoắn 3D cực mềm mại, đàn hồi tốt và lớp vỏ nhung mịn không rụng lông, an toàn với làn da nhạy cảm của bé khi ôm ngủ hoặc vui chơi."
-            },
-            "12": {
-                name: "Bộ Thẻ Học Tư Duy Cho Bé",
-                price: "95.000 đ",
-                oldPrice: "150.000 đ",
-                category: "Quà To Giá Nhỏ",
-                brand: "BANDAI",
-                img: "🧩",
-                desc: "Thẻ học flashcard thông minh kết hợp tranh vẽ sinh động giúp nâng cao vốn từ vựng song ngữ Anh - Việt, nhận diện đồ vật, con vật và hiện tượng xung quanh hiệu quả cho bé từ 1 đến 6 tuổi."
-            },
-            "13": {
-                name: "Hộp Màu Vẽ Đa Năng 48 Món",
-                price: "75.000 đ",
-                oldPrice: "120.000 đ",
-                category: "Quà To Giá Nhỏ",
-                brand: "BANDAI",
-                img: "🎨",
-                desc: "Bộ màu vẽ đa năng bao gồm đầy đủ bút lông màu, sáp màu dầu, màu nước và bút chì vẽ cao cấp được xếp gọn gàng trong hộp khóa vali xinh xắn, thỏa sức cho trí tưởng tượng nghệ thuật của họa sĩ nhí."
-            },
-            "14": {
-                name: "Mô Hình Ngựa Pony Thần Kỳ",
-                price: "150.000 đ",
-                oldPrice: "250.000 đ",
-                category: "Quà To Giá Nhỏ",
-                brand: "MY LITTLE PONY",
-                img: "🦄",
-                desc: "Chú ngựa Pony xinh xắn nổi tiếng có chiếc sừng thần kỳ phát sáng dịu nhẹ và bộ bờm tóc bảy sắc cầu vồng óng mượt mà bé có thể tự tay tạo kiểu, tết tóc theo sở thích sáng tạo riêng."
-            }
-        };
-
         // Hàm tăng giảm số lượng mua hàng
         function changeQuantity(value) {
             const input = document.getElementById('quantityInput');
@@ -554,46 +438,101 @@
         }
 
         // Đọc tham số Query string từ URL (Ví dụ: product-detail.html?id=1)
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", async function () {
             const urlParams = new URLSearchParams(window.location.search);
             const productId = urlParams.get('id');
 
-            // Nếu tồn tại id sản phẩm trong cơ sở dữ liệu giả lập
-            if (productId && catalogProducts[productId]) {
-                const item = catalogProducts[productId];
+            if (!productId) {
+                document.getElementById('productName').innerText = "Không tìm thấy sản phẩm";
+                return;
+            }
 
-                // Đổ dữ liệu vào giao diện HTML công khai
+            try {
+                // Fetch product detail
+                const res = await fetchProductDetail(productId);
+                const item = res.data;
+
+                // Fetch category name
+                let categoryName = "Danh mục";
+                if(item.category_id) {
+                    try {
+                        const catRes = await apiRequest("/categories");
+                        const category = catRes.data.find(c => c.id === item.category_id);
+                        if(category) categoryName = category.name;
+                    } catch(e) {}
+                }
+
+                // Format price
+                const priceFormatted = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price);
+                
+                // Set fake emoji image based on name
+                let img = '🎁';
+                if (item.name.toLowerCase().includes('xe')) img = '🏎️';
+                if (item.name.toLowerCase().includes('gấu')) img = '🧸';
+                if (item.name.toLowerCase().includes('robot')) img = '🤖';
+                if (item.name.toLowerCase().includes('lego')) img = '🏰';
+                
+                // Đổ dữ liệu vào giao diện HTML
                 document.getElementById('productName').innerText = item.name;
                 document.getElementById('breadcrumbName').innerText = item.name;
-                document.getElementById('productPrice').innerText = item.price;
-                if (item.oldPrice) {
-                    document.getElementById('productOldPrice').innerText = item.oldPrice;
-                    document.getElementById('productOldPrice').style.display = "inline";
-                } else {
-                    document.getElementById('productOldPrice').style.display = "none";
-                }
-                document.getElementById('productBrand').innerText = item.brand || "G4 STORE";
-                document.getElementById('productImg').innerText = item.img;
-                document.getElementById('productDesc').innerText = item.desc;
-                document.getElementById('breadcrumbCategory').innerText = item.category;
+                document.getElementById('productPrice').innerText = priceFormatted;
+                document.getElementById('productOldPrice').style.display = "none";
+                document.getElementById('productBrand').innerText = "Brand " + item.brand_id;
+                document.getElementById('productImg').innerText = img;
+                document.getElementById('productDesc').innerText = item.description || "Chưa có mô tả chi tiết";
+                document.getElementById('breadcrumbCategory').innerText = categoryName;
 
                 // Cập nhật lại tiêu đề trang <title> theo tên sản phẩm
                 document.title = item.name + " - G4 ToyStore";
-            } else {
-                // Trường hợp click vãng lai không truyền ID hoặc ID sai lệch
-                document.getElementById('productName').innerText = "Sản phẩm quà tặng hấp dẫn";
+            } catch (error) {
+                console.error("Error loading product detail:", error);
+                document.getElementById('productName').innerText = "Sản phẩm không tồn tại";
                 document.getElementById('productPrice').innerText = "Liên hệ";
-                document.getElementById('breadcrumbCategory').innerText = "Đồ Chơi G4";
             }
         });
 
-        // Hàm Mua Ngay - chuyển đến trang thanh toán PayPal hoặc Checkout
-        function buyNow() {
+        // Hàm Thêm vào giỏ hàng
+        async function addToCart() {
             const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id') || '1';
-            const quantity = document.getElementById('quantityInput').value || 1;
+            const productId = urlParams.get('id');
+            const quantity = parseInt(document.getElementById('quantityInput').value);
 
-            window.location.href = `checkout.html?id=${productId}&qty=${quantity}`;
+            if(!productId) return;
+
+            try {
+                // Gọi API thêm vào giỏ hàng (yêu cầu Auth)
+                const res = await apiRequest("/cart/", "POST", { product_id: parseInt(productId), quantity: quantity }, true);
+                alert("Đã thêm sản phẩm vào giỏ hàng thành công!");
+            } catch (error) {
+                console.error("Lỗi thêm vào giỏ hàng:", error);
+                if (error.message.includes("Expired") || error.message.includes("Missing") || error.message.includes("Token")) {
+                    alert("Vui lòng đăng nhập để thêm vào giỏ hàng.");
+                    window.location.href = "login.html";
+                } else {
+                    alert("Không thể thêm vào giỏ hàng: " + error.message);
+                }
+            }
+        }
+
+        // Hàm Mua Ngay - chuyển đến trang thanh toán
+        async function buyNow() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('id');
+            const quantity = parseInt(document.getElementById('quantityInput').value);
+
+            if(!productId) return;
+
+            try {
+                await apiRequest("/cart/", "POST", { product_id: parseInt(productId), quantity: quantity }, true);
+                window.location.href = "checkout.html";
+            } catch (error) {
+                if (error.message.includes("Expired") || error.message.includes("Missing") || error.message.includes("Token")) {
+                    alert("Vui lòng đăng nhập để mua hàng.");
+                    window.location.href = "login.html";
+                } else {
+                    alert("Có lỗi xảy ra: " + error.message);
+                }
+            }
         }
     </script>
 </body>

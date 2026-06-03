@@ -51,7 +51,7 @@ function renderHeaderNavbar() {
                     <li><a href="products.html?brand=bandai">Bandai</a></li>
                 </ul>
             </li>
-            <li class="nav-item" style="margin-left: auto;">
+            <li class="nav-item" id="menu-admin" style="margin-left: auto; display: none;">
                 <a href="../admin/dashboard.html" style="color: #ffdd59; font-weight: 700;">⚙️ Trang Quản Trị</a>
             </li>
         </ul>
@@ -98,6 +98,7 @@ function checkLoginNavbar() {
     const userProfile = document.getElementById("header-user-profile");
     const usernameText = document.getElementById("header-username-text");
     const avatarImg = document.getElementById("header-avatar-img");
+    const adminMenu = document.getElementById("menu-admin");
 
     if (!loginBtn || !userProfile) return;
 
@@ -109,7 +110,17 @@ function checkLoginNavbar() {
         if (loggedAvatar) {
             avatarImg.src = loggedAvatar;
         } else {
-            avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedName)}&background=ff6b6b&color=fff`;
+            avatarImg.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(loggedName)}&background=333&color=fff`;
+        }
+        
+        const userJSON = localStorage.getItem("user");
+        if (userJSON) {
+            try {
+                const user = JSON.parse(userJSON);
+                if (user.role === "ADMIN" && adminMenu) {
+                    adminMenu.style.display = "block";
+                }
+            } catch (e) {}
         }
     } else {
         loginBtn.style.display = "inline-flex";

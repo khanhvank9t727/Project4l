@@ -12,17 +12,20 @@
     <!-- Nhúng CSS & JS Header/Navbar chung -->
     <link rel="stylesheet" href="header-navbar.css">
     <script src="header-navbar.js" defer></script>
+    
+    <script src="../../assets/js/shared/config.js"></script>
+    <script src="../../assets/js/shared/storage.js"></script>
+    <script src="../../assets/js/shared/api_client.js"></script>
+    <script src="../../assets/js/shared/product_api.js"></script>
 
     <style>
         :root {
-            --primary-color: #ff6b6b;
-            /* Đỏ san hô */
-            --secondary-color: #4ecdc4;
-            /* Xanh mint */
-            --text-color: #333333;
-            --bg-light: #f5f7fa;
+            --primary-color: #111111;
+            --secondary-color: #666666;
+            --text-color: #1a1a1a;
+            --bg-light: #f9f9f9;
             --white: #ffffff;
-            --dark-blue: #2c3e50;
+            --dark-blue: #111111;
         }
 
         * {
@@ -49,7 +52,7 @@
             width: 100%;
             height: 420px;
             overflow: hidden;
-            background-color: #2c3e50;
+            background-color: var(--primary-color);
         }
 
         .slider-wrapper {
@@ -168,7 +171,7 @@
         .section-title {
             text-align: center;
             font-size: 2rem;
-            color: #2c3e50;
+            color: var(--primary-color);
             margin-bottom: 40px;
             position: relative;
         }
@@ -214,20 +217,9 @@
             border-radius: 15px;
         }
 
-        .bg-1 {
-            background-color: #ffeaa7;
-        }
-
-        .bg-2 {
-            background-color: #ffcbdf;
-        }
-
-        .bg-3 {
-            background-color: #dff9fb;
-        }
-
-        .bg-4 {
-            background-color: #ffbe76;
+        .bg-1, .bg-2, .bg-3, .bg-4 {
+            background-color: #f0f0f0;
+            color: #111;
         }
 
         .cat-text h3 {
@@ -405,7 +397,7 @@
 
         /* --- SITE FOOTER --- */
         .site-footer {
-            background-color: #2c3e50;
+            background-color: var(--primary-color);
             color: var(--white);
             padding: 60px 50px 30px;
         }
@@ -552,134 +544,9 @@
     <main class="main-content">
         <h2 class="section-title">Khám Phá Cửa Hàng</h2>
 
-        <div class="categories-container">
-
-            <!-- Category 1 -->
-            <section class="category-block">
-                <div class="category-header">
-                    <div class="cat-icon bg-1">🎢</div>
-                    <div class="cat-text">
-                        <h3>Playground 2026</h3>
-                        <p>Xu hướng đồ chơi tương tác và vận động mới nhất năm nay.</p>
-                    </div>
-                </div>
-
-                <div class="products-slider-wrapper">
-                    <div class="products-grid">
-                        <a href="product-detail.html?id=1" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=400&auto=format&fit=crop&q=80"
-                                    alt="Xe Đua">
-                            </div>
-                            <h4 class="product-name">Xe Đua Địa Hình Cân Bằng</h4>
-                            <p class="product-price">450.000 đ</p>
-                        </a>
-                        <a href="product-detail.html?id=2" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=400&auto=format&fit=crop&q=80"
-                                    alt="Robot">
-                            </div>
-                            <h4 class="product-name">Robot Nhảy Múa Thông Minh</h4>
-                            <p class="product-price">620.000 đ</p>
-                        </a>
-                        <a href="product-detail.html?id=3" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1547447134-cd3f5c716030?w=400&auto=format&fit=crop&q=80"
-                                    alt="Ván Trượt">
-                            </div>
-                            <h4 class="product-name">Ván Trượt Thể Thao Siêu Hạng</h4>
-                            <p class="product-price">350.000 đ</p>
-                        </a>
-                        <a href="product-detail.html?id=4" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1618215643447-06dfef6f3682?w=400&auto=format&fit=crop&q=80"
-                                    alt="Phi tiêu">
-                            </div>
-                            <h4 class="product-name">Bộ Phi Tiêu Nam Châm An Toàn</h4>
-                            <p class="product-price">180.000 đ</p>
-                        </a>
-                        <a href="product-detail.html?id=5" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=400&auto=format&fit=crop&q=80"
-                                    alt="Scooter">
-                            </div>
-                            <h4 class="product-name">Xe Scooter Điện Trẻ Em</h4>
-                            <p class="product-price">1.250.000 đ</p>
-                        </a>
-                    </div>
-
-                    <!-- Scrollbar tùy biến điều khiển kéo thả -->
-                    <div class="g4-scroll-controller">
-                        <div class="g4-scrollbar-track">
-                            <div class="g4-scrollbar-thumb">👑</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="more-actions">
-                    <a href="products.html?cat=playground-2026" class="btn-view-more">Xem thêm Playground 2026 ▾</a>
-                </div>
-            </section>
-
-            <!-- Category 2 -->
-            <section class="category-block">
-                <div class="category-header">
-                    <div class="cat-icon bg-2">🎁</div>
-                    <div class="cat-text">
-                        <h3>Quà To Giá Nhỏ</h3>
-                        <p>Các deal siêu hời, giảm giá ngập tràn cho bé yêu.</p>
-                    </div>
-                </div>
-
-                <div class="products-slider-wrapper">
-                    <div class="products-grid">
-                        <a href="product-detail.html?id=11" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1559251606-c623743a6d76?w=400&auto=format&fit=crop&q=80"
-                                    alt="Gấu bông">
-                            </div>
-                            <h4 class="product-name">Gấu Bông Khổng Lồ Đáng Yêu</h4>
-                            <p class="product-price">199.000 đ <span class="old-price">350.000 đ</span></p>
-                        </a>
-                        <a href="product-detail.html?id=12" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?w=400&auto=format&fit=crop&q=80"
-                                    alt="Thẻ học">
-                            </div>
-                            <h4 class="product-name">Bộ Thẻ Học Tư Duy Cho Bé</h4>
-                            <p class="product-price">95.000 đ <span class="old-price">150.000 đ</span></p>
-                        </a>
-                        <a href="product-detail.html?id=13" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&auto=format&fit=crop&q=80"
-                                    alt="Bút vẽ">
-                            </div>
-                            <h4 class="product-name">Hộp Màu Vẽ Đa Năng 48 Món</h4>
-                            <p class="product-price">75.000 đ <span class="old-price">120.000 đ</span></p>
-                        </a>
-                        <a href="product-detail.html?id=14" class="product-card">
-                            <div class="product-img-wrapper">
-                                <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=400&auto=format&fit=crop&q=80"
-                                    alt="Ngựa gỗ">
-                            </div>
-                            <h4 class="product-name">Mô Hình Ngựa Pony Thần Kỳ</h4>
-                            <p class="product-price">150.000 đ <span class="old-price">250.000 đ</span></p>
-                        </a>
-                    </div>
-
-                    <!-- Scrollbar tùy biến điều khiển kéo thả -->
-                    <div class="g4-scroll-controller">
-                        <div class="g4-scrollbar-track">
-                            <div class="g4-scrollbar-thumb">👑</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="more-actions">
-                    <a href="products.html?cat=qua-to-gia-nho" class="btn-view-more">Xem thêm Quà To Giá Nhỏ ▾</a>
-                </div>
-            </section>
-
+        <div class="categories-container" id="dynamic-categories">
+            <!-- Categories and their products will be rendered here via JS -->
+            <div style="text-align: center; padding: 50px;">Đang tải dữ liệu...</div>
         </div>
     </main>
 
@@ -858,9 +725,88 @@
         }
 
         // Kích hoạt tất cả khi sẵn sàng
-        window.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("DOMContentLoaded", async () => {
+            await loadDynamicContent();
             initProductSliders();
         });
+
+        async function loadDynamicContent() {
+            try {
+                const catRes = await apiRequest("/categories");
+                const prodRes = await fetchProducts();
+                
+                const categories = catRes.data || [];
+                const products = prodRes.data || [];
+                
+                const container = document.getElementById('dynamic-categories');
+                container.innerHTML = '';
+                
+                let bgCounter = 1;
+                
+                categories.forEach(cat => {
+                    // Filter products for this category
+                    const catProducts = products.filter(p => p.category_id === cat.id);
+                    if(catProducts.length === 0) return; // Skip empty categories
+                    
+                    const bgClass = 'bg-' + bgCounter;
+                    bgCounter = bgCounter >= 4 ? 1 : bgCounter + 1;
+                    
+                    let productsHtml = '';
+                    catProducts.forEach(prod => {
+                        const priceFormatted = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(prod.price);
+                        
+                        let imgUrl = 'https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=400&auto=format&fit=crop&q=80';
+                        if (prod.name.toLowerCase().includes('robot')) imgUrl = 'https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=400&auto=format&fit=crop&q=80';
+                        if (prod.name.toLowerCase().includes('lego')) imgUrl = 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=400&auto=format&fit=crop&q=80';
+                        if (prod.name.toLowerCase().includes('gấu')) imgUrl = 'https://images.unsplash.com/photo-1559251606-c623743a6d76?w=400&auto=format&fit=crop&q=80';
+
+                        productsHtml += `
+                            <a href="product-detail.html?id=${prod.id}" class="product-card">
+                                <div class="product-img-wrapper">
+                                    <img src="${imgUrl}" alt="${prod.name}">
+                                </div>
+                                <h4 class="product-name">${prod.name}</h4>
+                                <p class="product-price">${priceFormatted}</p>
+                            </a>
+                        `;
+                    });
+
+                    const catSection = `
+                        <section class="category-block">
+                            <div class="category-header">
+                                <div class="cat-icon ${bgClass}">🎁</div>
+                                <div class="cat-text">
+                                    <h3>${cat.name}</h3>
+                                    <p>${cat.description || ''}</p>
+                                </div>
+                            </div>
+
+                            <div class="products-slider-wrapper">
+                                <div class="products-grid">
+                                    ${productsHtml}
+                                </div>
+
+                                <div class="g4-scroll-controller">
+                                    <div class="g4-scrollbar-track">
+                                        <div class="g4-scrollbar-thumb">👑</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="more-actions">
+                                <a href="products.html?cat=${cat.id}" class="btn-view-more">Xem thêm ${cat.name} ▾</a>
+                            </div>
+                        </section>
+                    `;
+                    
+                    container.innerHTML += catSection;
+                });
+            } catch(e) {
+                console.error("Error loading home content", e);
+                document.getElementById('dynamic-categories').innerHTML = '<div style="text-align: center; padding: 50px;">Lỗi kết nối máy chủ!</div>';
+            }
+        }
+
     </script>
 </body>
 

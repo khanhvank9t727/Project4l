@@ -26,6 +26,8 @@ def get_products():
 
             "brand_id": product.HKKM_Brand_Id,
 
+            "category_id": product.HKKM_Category_Id,
+
             "gender": product.HKKM_Gender,
 
             "age_range": product.HKKM_Age_Range
@@ -61,6 +63,8 @@ def get_product_detail(product_id):
         "stock": product.HKKM_Stock_Quantity,
 
         "brand_id": product.HKKM_Brand_Id,
+        
+        "category_id": product.HKKM_Category_Id,
 
         "gender": product.HKKM_Gender,
 

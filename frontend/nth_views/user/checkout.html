@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="header-navbar.css">
+    
+    <script src="../../assets/js/shared/config.js"></script>
+    <script src="../../assets/js/shared/storage.js"></script>
+    <script src="../../assets/js/shared/api_client.js"></script>
 
     <script
         src="https://www.paypal.com/sdk/js?client-id=ASTZc4RK6VDluKsxZQ6AMMxrDg8bwRQjttl4bhrfIbIomeZD77vEnA5i-Dd0rfWSndfoU7iDSg_9B2Qn&currency=USD"></script>
@@ -16,12 +20,12 @@
     <style>
         /* Chỉ giữ lại các CSS đặc thù của trang Checkout, xóa bỏ hoàn toàn CSS Header/Navbar trùng lặp */
         :root {
-            --primary-color: #ff6b6b;
-            --secondary-color: #4ecdc4;
-            --text-color: #333333;
-            --bg-light: #f5f7fa;
+            --primary-color: #111111;
+            --secondary-color: #666666;
+            --text-color: #1a1a1a;
+            --bg-light: #f9f9f9;
             --white: #ffffff;
-            --dark-navy: #2c3e50;
+            --dark-navy: #111111;
             --success-green: #27ae60;
             --warning-orange: #f39c12;
         }
@@ -290,7 +294,7 @@
         }
 
         .btn-retry:hover {
-            background: #ee5253;
+            background: var(--secondary-color);
             transform: translateY(-2px);
         }
 
@@ -496,9 +500,9 @@
         }
 
         .btn-back-shop:hover {
-            background: #ee5253;
+            background: var(--secondary-color);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         /* --- SECURE BADGE --- */
@@ -676,132 +680,141 @@
     <script src="header-navbar.js"></script>
 
     <script>
-        // ========================================
-        // CƠ SỞ DỮ LIỆU SẢN PHẨM
-        // ========================================
-        const catalogProducts = {
-            "1": { name: "Xe Đua Địa Hình Cân Bằng", price: 450000, priceDisplay: "450.000 đ", brand: "HOT WHEELS", img: "🏎️", desc: "Xe đua địa hình cân bằng" },
-            "2": { name: "Robot Nhảy Múa Thông Minh", price: 620000, priceDisplay: "620.000 đ", brand: "BANDAI", img: "🤖", desc: "Robot nhảy múa thông minh" },
-            "3": { name: "Ván Trượt Thể Thao Siêu Hạng", price: 350000, priceDisplay: "350.000 đ", brand: "G4 STORE", img: "🛹", desc: "Ván trượt thể thao siêu hạng" },
-            "4": { name: "Bộ Phi Tiêu Nam Châm An Toàn", price: 180000, priceDisplay: "180.000 đ", brand: "G4 STORE", img: "🎯", desc: "Bộ phi tiêu nam châm" },
-            "5": { name: "Lego City Máy Bay Cứu Hộ", price: 390000, priceDisplay: "390.000 đ", brand: "LEGO", img: "🧱", desc: "Lego City Máy Bay Cứu Hộ" }
-        };
-
         const VND_TO_USD_RATE = 25000;
-        const API_BASE = "http://127.0.0.1:5000/api";
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
-        const quantity = parseInt(urlParams.get('qty')) || 1;
 
         function formatVND(amount) {
             return amount.toLocaleString('vi-VN') + ' đ';
         }
 
-        function renderCheckout() {
+        async function renderCheckout() {
             const container = document.getElementById('checkoutContent');
 
-            if (!productId || !catalogProducts[productId]) {
+            try {
+                // Fetch cart items
+                const res = await apiRequest("/cart/", "GET", null, true);
+                const cartItems = res.data.items || [];
+                
+                if (cartItems.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-checkout">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                            <h2>Giỏ hàng trống</h2>
+                            <p>Vui lòng quay lại cửa hàng để chọn sản phẩm</p>
+                            <a href="home.html" class="btn-back-shop">
+                                <i class="fa-solid fa-arrow-left"></i> Quay lại cửa hàng
+                            </a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const totalVND = res.data.total;
+                const totalUSD = (totalVND / VND_TO_USD_RATE).toFixed(2);
+
+                let productsHtml = '';
+                cartItems.forEach(item => {
+                    let img = '🎁';
+                    if (item.name.toLowerCase().includes('xe')) img = '🏎️';
+                    if (item.name.toLowerCase().includes('gấu')) img = '🧸';
+                    if (item.name.toLowerCase().includes('robot')) img = '🤖';
+                    if (item.name.toLowerCase().includes('lego')) img = '🏰';
+
+                    productsHtml += `
+                        <div class="order-product-row">
+                            <div class="order-product-emoji">${img}</div>
+                            <div class="order-product-info">
+                                <h3>${item.name}</h3>
+                                <p class="qty-label">Số lượng: <strong>${item.quantity}</strong></p>
+                            </div>
+                            <div class="order-product-price">
+                                <div class="price-main">${formatVND(item.item_total)}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
                 container.innerHTML = `
-                    <div class="empty-checkout">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <h2>Không tìm thấy sản phẩm</h2>
-                        <p>Vui lòng quay lại cửa hàng để chọn sản phẩm</p>
-                        <a href="home.html" class="btn-back-shop">
-                            <i class="fa-solid fa-arrow-left"></i> Quay lại cửa hàng
-                        </a>
-                    </div>
-                `;
-                return;
-            }
+                    <div class="order-summary-card">
+                        <h2 class="card-title"><i class="fa-solid fa-receipt"></i> Đơn Hàng Của Bạn</h2>
 
-            const product = catalogProducts[productId];
-            const totalVND = product.price * quantity;
-            const totalUSD = (totalVND / VND_TO_USD_RATE).toFixed(2);
+                        ${productsHtml}
 
-            container.innerHTML = `
-                <div class="order-summary-card">
-                    <h2 class="card-title"><i class="fa-solid fa-receipt"></i> Đơn Hàng Của Bạn</h2>
-
-                    <div class="order-product-row">
-                        <div class="order-product-emoji">${product.img}</div>
-                        <div class="order-product-info">
-                            <span class="brand-tag">${product.brand}</span>
-                            <h3>${product.name}</h3>
-                            <p class="qty-label">Số lượng: <strong>${quantity}</strong></p>
-                        </div>
-                        <div class="order-product-price">
-                            <div class="price-main">${formatVND(totalVND)}</div>
-                        </div>
-                    </div>
-
-                    <div class="price-breakdown">
-                        <div class="price-row">
-                            <span>Đơn giá:</span>
-                            <span>${formatVND(product.price)}</span>
-                        </div>
-                        <div class="price-row">
-                            <span>Số lượng:</span>
-                            <span>x${quantity}</span>
-                        </div>
-                        <div class="price-row">
-                            <span>Phí vận chuyển:</span>
-                            <span style="color: var(--success-green); font-weight: 600;">Miễn phí</span>
-                        </div>
-                        <div class="price-row total-row">
-                            <span>Tổng cộng:</span>
-                            <span>
-                                ${formatVND(totalVND)}
-                                <br><span class="usd-convert">≈ $${totalUSD} USD</span>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="exchange-note">
-                        <i class="fa-solid fa-circle-info"></i>
-                        Tỷ giá quy đổi: 1 USD = 25.000 VND (PayPal thanh toán bằng USD)
-                    </div>
-                </div>
-
-                <div class="payment-card">
-                    <h2 class="card-title"><i class="fa-brands fa-paypal"></i> Thanh Toán PayPal</h2>
-
-                    <div class="paypal-section">
-                        <div class="paypal-info">
-                            <i class="fa-brands fa-paypal"></i>
-                            <div>
-                                <p><strong>PayPal Checkout</strong></p>
-                                <p>Thanh toán an toàn qua PayPal Sandbox</p>
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span>Phí vận chuyển:</span>
+                                <span style="color: var(--success-green); font-weight: 600;">Miễn phí</span>
+                            </div>
+                            <div class="price-row total-row">
+                                <span>Tổng cộng:</span>
+                                <span>
+                                    ${formatVND(totalVND)}
+                                    <br><span class="usd-convert">≈ $${totalUSD} USD</span>
+                                </span>
                             </div>
                         </div>
 
-                        <div id="paypal-button-container"></div>
-
-                        <div class="payment-loading" id="paymentLoading">
-                            <div class="spinner"></div>
-                            <p>Đang xử lý thanh toán...</p>
-                        </div>
-
-                        <div class="payment-error" id="paymentError">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                            <p id="errorMessage">Có lỗi xảy ra. Vui lòng thử lại.</p>
-                            <button class="btn-retry" onclick="location.reload()">
-                                <i class="fa-solid fa-rotate-right"></i> Thử lại
-                            </button>
+                        <div class="exchange-note">
+                            <i class="fa-solid fa-circle-info"></i>
+                            Tỷ giá quy đổi: 1 USD = 25.000 VND (PayPal thanh toán bằng USD)
                         </div>
                     </div>
 
-                    <div class="secure-badge">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        Giao dịch được bảo mật bởi PayPal
-                    </div>
-                </div>
-            `;
+                    <div class="payment-card">
+                        <h2 class="card-title"><i class="fa-solid fa-truck-fast"></i> Thông Tin Giao Hàng</h2>
+                        <div style="margin-bottom: 30px;">
+                            <input type="text" id="shipName" placeholder="Họ và Tên" oninput="validateShipping()" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: 'Quicksand', sans-serif;">
+                            <input type="text" id="shipPhone" placeholder="Số điện thoại liên hệ" oninput="validateShipping()" style="width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: 'Quicksand', sans-serif;">
+                            <input type="text" id="shipAddress" placeholder="Địa chỉ giao hàng đầy đủ" oninput="validateShipping()" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: 'Quicksand', sans-serif;">
+                            <p style="color: #e74c3c; font-size: 0.9rem; font-weight: 600;" id="formError">Vui lòng điền đủ thông tin giao hàng để mở khóa thanh toán.</p>
+                        </div>
 
-            initPayPalButtons(product, totalVND, totalUSD);
+                        <h2 class="card-title"><i class="fa-brands fa-paypal"></i> Thanh Toán</h2>
+
+                        <div class="paypal-section" id="paypalSectionWrap" style="opacity: 0.4; pointer-events: none; transition: opacity 0.3s;">
+                            <div class="paypal-info">
+                                <i class="fa-brands fa-paypal"></i>
+                                <div>
+                                    <p><strong>PayPal Checkout</strong></p>
+                                    <p>Thanh toán an toàn qua PayPal</p>
+                                </div>
+                            </div>
+
+                            <div id="paypal-button-container"></div>
+
+                            <div class="payment-loading" id="paymentLoading">
+                                <div class="spinner"></div>
+                                <p>Đang xử lý thanh toán...</p>
+                            </div>
+
+                            <div class="payment-error" id="paymentError">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                <p id="errorMessage">Có lỗi xảy ra. Vui lòng thử lại.</p>
+                                <button class="btn-retry" onclick="location.reload()">
+                                    <i class="fa-solid fa-rotate-right"></i> Thử lại
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="secure-badge">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Giao dịch được bảo mật bởi PayPal
+                        </div>
+                    </div>
+                `;
+
+                initPayPalButtons();
+            } catch (error) {
+                console.error("Lỗi lấy giỏ hàng:", error);
+                if (error.message.includes("Token") || error.message.includes("Expired") || error.message.includes("Missing")) {
+                    alert("Vui lòng đăng nhập để thanh toán!");
+                    window.location.href = "login.html";
+                } else {
+                    container.innerHTML = `<div class="empty-checkout"><h2>Lỗi khi tải giỏ hàng</h2><p>${error.message}</p></div>`;
+                }
+            }
         }
 
-        function initPayPalButtons(product, totalVND, totalUSD) {
+        function initPayPalButtons() {
             paypal.Buttons({
                 style: {
                     layout: 'vertical',
@@ -810,52 +823,39 @@
                     label: 'paypal',
                     height: 50
                 },
-                createOrder: function (data, actions) {
+                createOrder: async function (data, actions) {
                     showLoading(true);
-                    return fetch(`${API_BASE}/paypal/create-order`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            product_name: product.name,
-                            quantity: quantity,
-                            price_vnd: product.price
-                        })
-                    })
-                        .then(res => res.json())
-                        .then(orderData => {
-                            showLoading(false);
-                            if (orderData.success) {
-                                return orderData.data.order_id;
-                            } else {
-                                throw new Error(orderData.message || 'Không thể tạo đơn hàng');
-                            }
-                        })
-                        .catch(err => {
-                            showLoading(false);
-                            showError(err.message);
-                            throw err;
-                        });
+                    try {
+                        const res = await apiRequest('/paypal/create-order', 'POST', {}, true);
+                        showLoading(false);
+                        return res.data.order_id;
+                    } catch (err) {
+                        showLoading(false);
+                        showError(err.message);
+                        throw err;
+                    }
                 },
-                onApprove: function (data, actions) {
+                onApprove: async function (data, actions) {
                     showLoading(true);
-                    return fetch(`${API_BASE}/paypal/capture-order`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ order_id: data.orderID })
-                    })
-                        .then(res => res.json())
-                        .then(captureData => {
-                            showLoading(false);
-                            if (captureData.success) {
-                                showSuccess(captureData.data);
-                            } else {
-                                showError(captureData.message || 'Thanh toán thất bại');
-                            }
-                        })
-                        .catch(err => {
-                            showLoading(false);
-                            showError('Lỗi xác nhận thanh toán: ' + err.message);
+                    try {
+                        const shipName = document.getElementById('shipName').value;
+                        const shipPhone = document.getElementById('shipPhone').value;
+                        const addr = document.getElementById('shipAddress').value;
+                        const res = await apiRequest('/paypal/capture-order', 'POST', { 
+                            order_id: data.orderID, 
+                            shipping_address: addr,
+                            ship_name: shipName,
+                            ship_phone: shipPhone
+                        }, true);
+                        showLoading(false);
+                        showSuccess({
+                            transaction_id: res.data.order_id,
+                            payer_email: "Cập nhật qua API"
                         });
+                    } catch (err) {
+                        showLoading(false);
+                        showError('Lỗi xác nhận thanh toán: ' + err.message);
+                    }
                 },
                 onCancel: function (data) {
                     showLoading(false);
@@ -867,6 +867,24 @@
                     console.error('PayPal Error:', err);
                 }
             }).render('#paypal-button-container');
+        }
+
+        function validateShipping() {
+            const name = document.getElementById('shipName').value.trim();
+            const phone = document.getElementById('shipPhone').value.trim();
+            const addr = document.getElementById('shipAddress').value.trim();
+            const wrap = document.getElementById('paypalSectionWrap');
+            const err = document.getElementById('formError');
+            
+            if (name && phone && addr) {
+                wrap.style.opacity = '1';
+                wrap.style.pointerEvents = 'auto';
+                err.style.display = 'none';
+            } else {
+                wrap.style.opacity = '0.4';
+                wrap.style.pointerEvents = 'none';
+                err.style.display = 'block';
+            }
         }
 
         function showLoading(show) {

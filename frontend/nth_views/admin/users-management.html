@@ -16,6 +16,7 @@
             --white: #ffffff;
             --text-dark: #333333;
             --danger: #e74c3c;
+            --success: #2ecc71;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Quicksand', sans-serif; }
@@ -44,9 +45,13 @@
         .role-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; }
         .role-badge.admin { background-color: #eaf2f8; color: #2980b9; }
         .role-badge.customer { background-color: #f4ecf7; color: #8e44ad; }
+        .role-badge.locked { background-color: #fdedec; color: var(--danger); }
 
-        .btn-lock { padding: 6px 12px; background-color: #fdedec; color: var(--danger); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-lock { padding: 6px 12px; background-color: #fdedec; color: var(--danger); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
         .btn-lock:hover { background-color: var(--danger); color: white; }
+        .btn-unlock { padding: 6px 12px; background-color: #e8f8f0; color: var(--success); border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .btn-unlock:hover { background-color: var(--success); color: white; }
+        .btn-disabled { padding: 6px 12px; background-color: #f5f5f5; color: #999; border: none; border-radius: 6px; font-weight: 600; cursor: not-allowed; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -60,7 +65,7 @@
             <li class="active"><a href="users-management.html">👥 Quản lý người dùng</a></li>
             <li><a href="../user/home.html" target="_blank">🌐 Xem trang chủ User</a></li>
         </ul>
-        <div class="sidebar-footer"><a href="../user/login.html" class="btn-logout">Đăng xuất ↩</a></div>
+        <div class="sidebar-footer"><a href="#" class="btn-logout" onclick="apiClient.logout(); return false;">Đăng xuất ↩</a></div>
     </aside>
 
     <div class="main-wrapper">
@@ -81,36 +86,103 @@
                             <th>Thao Tác</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td><b>#U001</b></td>
-                            <td>admin_g4</td>
-                            <td>admin@g4toystore.com</td>
-                            <td><span class="role-badge admin">Quản trị viên</span></td>
-                            <td>01/01/2026</td>
-                            <td><button class="btn-lock" style="opacity:0.5; cursor:not-allowed;" disabled>Không thể khóa</button></td>
-                        </tr>
-                        <tr>
-                            <td><b>#U002</b></td>
-                            <td>nguyen_van_a</td>
-                            <td>vana@gmail.com</td>
-                            <td><span class="role-badge customer">Khách hàng</span></td>
-                            <td>12/03/2026</td>
-                            <td><button class="btn-lock" onclick="confirm('Bạn có chắc chắn muốn khóa tài khoản này?')">Khóa tài khoản</button></td>
-                        </tr>
-                        <tr>
-                            <td><b>#U003</b></td>
-                            <td>tranthib</td>
-                            <td>b_tran@gmail.com</td>
-                            <td><span class="role-badge customer">Khách hàng</span></td>
-                            <td>18/05/2026</td>
-                            <td><button class="btn-lock" onclick="confirm('Bạn có chắc chắn muốn khóa tài khoản này?')">Khóa tài khoản</button></td>
-                        </tr>
+                    <tbody id="user-table-body">
                     </tbody>
                 </table>
             </div>
         </main>
     </div>
 
+    <script src="../js/api_client.js"></script>
+    <script>
+        // Bảo vệ route
+        if (!localStorage.getItem('access_token')) {
+            window.location.href = '../user/login.html';
+        }
+
+        async function loadUsers() {
+            try {
+                const res = await apiClient.get('/admin/users');
+                if (res.success) {
+                    renderUsers(res.data);
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải người dùng:", error);
+            }
+        }
+
+        function renderUsers(users) {
+            const tbody = document.getElementById('user-table-body');
+            let html = '';
+
+            if (!users || users.length === 0) {
+                html = `<tr><td colspan="6" style="text-align:center; color:#999; padding:30px;">Chưa có người dùng nào.</td></tr>`;
+            } else {
+                users.forEach(u => {
+                    let roleBadge = '';
+                    if (u.role === 'ADMIN') roleBadge = '<span class="role-badge admin">Quản trị viên</span>';
+                    else if (u.role === 'LOCKED') roleBadge = '<span class="role-badge locked">Bị khóa</span>';
+                    else roleBadge = '<span class="role-badge customer">Khách hàng</span>';
+
+                    let actionBtn = '';
+                    if (u.role === 'ADMIN') {
+                        actionBtn = `<button class="btn-disabled" disabled>Không thể thao tác</button>`;
+                    } else if (u.role === 'LOCKED') {
+                        actionBtn = `<button class="btn-unlock" onclick="unlockUser(${u.raw_id})">🔓 Mở khóa</button>`;
+                    } else {
+                        actionBtn = `<button class="btn-lock" onclick="lockUser(${u.raw_id})">🔒 Khóa tài khoản</button>`;
+                    }
+
+                    html += `
+                        <tr>
+                            <td><b>${u.id}</b></td>
+                            <td>${u.name}</td>
+                            <td>${u.email}</td>
+                            <td>${roleBadge}</td>
+                            <td>${u.date}</td>
+                            <td>${actionBtn}</td>
+                        </tr>
+                    `;
+                });
+            }
+            tbody.innerHTML = html;
+        }
+
+        async function lockUser(id) {
+            if (confirm("Bạn có chắc chắn muốn khóa tài khoản này? Người dùng sẽ không thể đăng nhập được nữa.")) {
+                try {
+                    const res = await apiClient.put(`/admin/users/${id}/lock`, {});
+                    if (res.success) {
+                        alert("Đã khóa tài khoản thành công!");
+                        loadUsers();
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                } catch (err) {
+                    alert("Có lỗi xảy ra khi gọi API khóa tài khoản");
+                }
+            }
+        }
+
+        async function unlockUser(id) {
+            if (confirm("Bạn có chắc chắn muốn mở khóa tài khoản này?")) {
+                try {
+                    const res = await apiClient.put(`/admin/users/${id}/unlock`, {});
+                    if (res.success) {
+                        alert("Đã mở khóa tài khoản thành công!");
+                        loadUsers();
+                    } else {
+                        alert("Lỗi: " + res.message);
+                    }
+                } catch (err) {
+                    alert("Có lỗi xảy ra khi gọi API mở khóa tài khoản");
+                }
+            }
+        }
+
+        window.onload = function() {
+            loadUsers();
+        };
+    </script>
 </body>
 </html>

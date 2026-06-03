@@ -40,7 +40,8 @@ class G4User(db.Model):
     )
 
     HKKM_Created_At = db.Column(
-        db.DateTime
+        db.DateTime,
+        default=db.func.now()
     )
 
     HKKM_Auth_Provider = db.Column(

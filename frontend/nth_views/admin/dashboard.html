@@ -255,6 +255,7 @@
         .status-badge.success { background-color: #e8f8f0; color: var(--success); }
         .status-badge.warning { background-color: #fef9e7; color: var(--warning); }
         .status-badge.danger { background-color: #fdedec; color: var(--danger); }
+        .status-badge.info { background-color: #e8f4f8; color: var(--active-color); }
 
         .btn-view {
             padding: 6px 12px;
@@ -388,7 +389,7 @@
             <li><a href="../user/home.html" target="_blank">🌐 Xem trang chủ User</a></li>
         </ul>
         <div class="sidebar-footer">
-            <a href="../user/login.html" class="btn-logout">Đăng xuất ↩</a>
+            <a href="#" class="btn-logout" onclick="apiClient.logout(); return false;">Đăng xuất ↩</a>
         </div>
     </aside>
 
@@ -489,36 +490,75 @@
         </div>
     </div>
 
+    <script src="../js/api_client.js"></script>
     <script>
-        // Mảng lưu trữ thông tin sản phẩm chi tiết của các đơn hàng gần đây
-        const recentOrders = [
-            { 
-                code: "#G4-1024", customer: "Nguyễn Văn A", date: "20/05/2026", total: 620000, status: "Chờ xử lý", statusClass: "warning",
-                products: ["🤖 Robot Nhảy Múa Thông Minh (x1)", "🏎️ Xe Đua Địa Hình Cân Bằng (x1)"]
-            },
-            { 
-                code: "#G4-1023", customer: "Trần Thị B", date: "19/05/2026", total: 199000, status: "Đã giao", statusClass: "success",
-                products: ["🧸 Gấu Bông Teddy Đáng Yêu (x1)"]
-            },
-            { 
-                code: "#G4-1022", customer: "Phạm Minh C", date: "19/05/2026", total: 1250000, status: "Đã hủy", statusClass: "danger",
-                products: ["🏰 Lego Lâu Đài Cổ Tích 500 Chi Tiết (x1)", "🤖 Robot Nhảy Múa Thông Minh (x1)"]
-            }
-        ];
+        // Bảo vệ route
+        if (!localStorage.getItem('access_token')) {
+            window.location.href = '../user/login.html';
+        }
 
-        // Đổ dữ liệu từ mảng JS ra cấu trúc bảng HTML
+        async function fetchDashboardData() {
+            try {
+                const statsRes = await apiClient.get('/admin/dashboard');
+                if (statsRes.success) {
+                    const stats = statsRes.data;
+                    document.querySelector('.card-revenue h3').innerText = stats.total_revenue.toLocaleString('vi-VN') + 'đ';
+                    document.querySelector('.card-orders h3').innerText = stats.total_orders + ' Đơn';
+                    document.querySelector('.card-users h3').innerText = stats.total_users + ' User';
+                    document.querySelector('.card-products h3').innerText = stats.total_products + ' Loại';
+                }
+
+                const ordersRes = await apiClient.get('/admin/orders');
+                if (ordersRes.success) {
+                    window.recentOrders = ordersRes.data;
+                    renderDashboardOrders();
+                }
+            } catch (err) {
+                console.error("Lỗi lấy dữ liệu:", err);
+            }
+        }
+        
+        function getStatusBadgeClass(status) {
+            switch(status) {
+                case 'Chờ xử lý':
+                case 'Pending': return 'warning';
+                case 'Đang giao':
+                case 'Processing':
+                case 'Shipped': return 'info';
+                case 'Đã giao':
+                case 'Delivered': return 'success';
+                case 'Hủy đơn':
+                case 'Cancelled': return 'danger';
+                default: return 'warning';
+            }
+        }
+
+        function getVietnameseStatus(status) {
+            switch(status) {
+                case 'Pending': return 'Chờ xử lý';
+                case 'Processing':
+                case 'Shipped': return 'Đang giao';
+                case 'Delivered': return 'Đã giao';
+                case 'Cancelled': return 'Hủy đơn';
+                default: return status;
+            }
+        }
+
+        // Đổ dữ liệu từ API ra cấu trúc bảng HTML
         function renderDashboardOrders() {
             const tbody = document.getElementById('dashboard-order-body');
             let html = '';
             
-            recentOrders.forEach((order, index) => {
+            const displayOrders = window.recentOrders ? window.recentOrders.slice(0, 5) : []; // Lấy 5 đơn mới nhất
+            
+            displayOrders.forEach((order, index) => {
                 html += `
                     <tr>
                         <td><b>${order.code}</b></td>
                         <td>${order.customer}</td>
                         <td>${order.date}</td>
-                        <td>${order.total.toLocaleString('vi-VN')} đ</td>
-                        <td><span class="status-badge ${order.statusClass}">${order.status}</span></td>
+                        <td>${Number(order.total).toLocaleString('vi-VN')} đ</td>
+                        <td><span class="status-badge ${getStatusBadgeClass(order.status)}">${getVietnameseStatus(order.status)}</span></td>
                         <td><button class="btn-view" onclick="openDetailModal(${index})">Xem</button></td>
                     </tr>
                 `;
@@ -528,19 +568,24 @@
 
         // Hàm xử lý hiển thị Modal khi click nút "Xem"
         function openDetailModal(index) {
-            const order = recentOrders[index];
+            const displayOrders = window.recentOrders ? window.recentOrders.slice(0, 5) : [];
+            const order = displayOrders[index];
             if (order) {
                 document.getElementById('dt-code').innerText = order.code;
                 document.getElementById('dt-customer').innerText = order.customer;
                 document.getElementById('dt-date').innerText = order.date;
-                document.getElementById('dt-status').innerHTML = `<span class="status-badge ${order.statusClass}">${order.status}</span>`;
-                document.getElementById('dt-total').innerText = order.total.toLocaleString('vi-VN') + " đ";
+                document.getElementById('dt-status').innerHTML = `<span class="status-badge ${getStatusBadgeClass(order.status)}">${order.status}</span>`;
+                document.getElementById('dt-total').innerText = Number(order.total).toLocaleString('vi-VN') + " đ";
                 
                 // Đổ dữ liệu danh sách sản phẩm mua cụ thể
                 let itemsHtml = '';
-                order.products.forEach(p => {
-                    itemsHtml += `<div class="toy-item"><span>${p}</span></div>`;
-                });
+                if(order.products && order.products.length > 0) {
+                    order.products.forEach(p => {
+                        itemsHtml += `<div class="toy-item"><span>${p}</span></div>`;
+                    });
+                } else {
+                    itemsHtml = `<div class="toy-item" style="color:#999;">Không có chi tiết sản phẩm.</div>`;
+                }
                 document.getElementById('dt-items-list').innerHTML = itemsHtml;
                 
                 // Hiển thị Overlay Modal
@@ -553,9 +598,13 @@
             document.getElementById('detail-modal').style.display = 'none';
         }
 
-        // Chạy hàm render ngay khi tải trang xong
+        function logout() {
+            apiClient.logout();
+        }
+
+        // Chạy hàm fetch ngay khi tải trang xong
         window.onload = function() {
-            renderDashboardOrders();
+            fetchDashboardData();
         };
     </script>
 </body>

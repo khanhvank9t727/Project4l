@@ -162,7 +162,10 @@
             <p>Tạo tài khoản khách hàng mới</p>
         </div>
 
-        <form action="#" method="POST">
+        <!-- Thêm thông báo -->
+        <div id="alertBox" style="display: none; padding: 10px; margin-bottom: 15px; border-radius: 8px; text-align: left; font-size: 0.9rem;"></div>
+
+        <form id="registerForm" novalidate>
             <!-- Khớp với HKKM_Full_Name (NOT NULL) -->
             <div class="form-group">
                 <label for="fullname">Họ và tên</label>
@@ -206,5 +209,75 @@
         </div>
     </div>
 
+    </div>
+
+    <script src="../../assets/js/shared/config.js"></script>
+    
+    <script>
+        const API_BASE = "http://127.0.0.1:5000/api";
+
+        function showAlert(message, isError = true) {
+            const box = document.getElementById("alertBox");
+            box.style.display = "block";
+            box.textContent = message;
+            if (isError) {
+                box.style.backgroundColor = "#fff0f0";
+                box.style.color = "#cc0000";
+                box.style.border = "1px solid #ffcccc";
+            } else {
+                box.style.backgroundColor = "#f0fff4";
+                box.style.color = "#1a7a3e";
+                box.style.border = "1px solid #b2f5c8";
+            }
+        }
+
+        document.getElementById("registerForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            const btn = document.querySelector(".btn-register");
+            const full_name = document.getElementById("fullname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const password = document.getElementById("password").value;
+            const address = document.getElementById("address").value.trim();
+            const terms = document.querySelector("input[name='terms']").checked;
+
+            if (!full_name || !email || !password || !terms) {
+                showAlert("Vui lòng điền đủ thông tin và đồng ý với điều khoản.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = "Đang đăng ký...";
+
+            try {
+                const res = await fetch(`${API_BASE}/auth/register`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        full_name,
+                        email,
+                        password,
+                        phone,
+                        address
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showAlert("Đăng ký thành công! Đang chuyển hướng...", false);
+                    setTimeout(() => window.location.href = "login.html", 1500);
+                } else {
+                    showAlert(data.message || "Đăng ký thất bại.");
+                    btn.disabled = false;
+                    btn.textContent = "Đăng Ký Tài Khoản";
+                }
+            } catch (error) {
+                showAlert("Lỗi kết nối máy chủ.");
+                btn.disabled = false;
+                btn.textContent = "Đăng Ký Tài Khoản";
+            }
+        });
+    </script>
 </body>
 </html>

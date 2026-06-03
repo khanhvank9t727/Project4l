@@ -12,7 +12,8 @@ product_routes = Blueprint(
 
 @product_routes.route(
     "/",
-    methods=["GET"]
+    methods=["GET"],
+    strict_slashes=False
 )
 def products():
 

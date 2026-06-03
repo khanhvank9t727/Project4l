@@ -122,7 +122,7 @@
         .topbar {
             height: 70px;
             background-color: var(--white);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -170,17 +170,28 @@
             background-color: var(--white);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 4px solid #ddd;
         }
 
-        .stat-card.card-revenue { border-color: var(--success); }
-        .stat-card.card-orders { border-color: var(--active-color); }
-        .stat-card.card-products { border-color: var(--warning); }
-        .stat-card.card-users { border-color: #9b59b6; }
+        .stat-card.card-revenue {
+            border-color: var(--success);
+        }
+
+        .stat-card.card-orders {
+            border-color: var(--active-color);
+        }
+
+        .stat-card.card-products {
+            border-color: var(--warning);
+        }
+
+        .stat-card.card-users {
+            border-color: #9b59b6;
+        }
 
         .stat-info p {
             font-size: 0.9rem;
@@ -206,7 +217,7 @@
             background-color: var(--white);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
         .table-header {
@@ -227,7 +238,7 @@
             text-align: left;
         }
 
-        .data-table th, 
+        .data-table th,
         .data-table td {
             padding: 14px 16px;
             border-bottom: 1px solid #eeeeee;
@@ -252,10 +263,25 @@
             display: inline-block;
         }
 
-        .status-badge.success { background-color: #e8f8f0; color: var(--success); }
-        .status-badge.warning { background-color: #fef9e7; color: var(--warning); }
-        .status-badge.danger { background-color: #fdedec; color: var(--danger); }
-        .status-badge.info { background-color: #e8f4f8; color: var(--active-color); }
+        .status-badge.success {
+            background-color: #e8f8f0;
+            color: var(--success);
+        }
+
+        .status-badge.warning {
+            background-color: #fef9e7;
+            color: var(--warning);
+        }
+
+        .status-badge.danger {
+            background-color: #fdedec;
+            color: var(--danger);
+        }
+
+        .status-badge.info {
+            background-color: #e8f4f8;
+            color: var(--active-color);
+        }
 
         .btn-view {
             padding: 6px 12px;
@@ -369,8 +395,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -394,7 +427,7 @@
     </aside>
 
     <div class="main-wrapper">
-        
+
         <header class="topbar">
             <div class="page-title">
                 <h2>Hệ thống quản trị tổng quan</h2>
@@ -406,12 +439,12 @@
         </header>
 
         <main class="content-body">
-            
+
             <div class="stats-grid">
                 <div class="stat-card card-revenue">
                     <div class="stat-info">
                         <p>Doanh Thu Tháng</p>
-                        <h3>42.500.000đ</h3>
+                        <h3 id="totalRevenue"></h3>
                     </div>
                     <div class="stat-icon">💰</div>
                 </div>
@@ -419,7 +452,7 @@
                 <div class="stat-card card-orders">
                     <div class="stat-info">
                         <p>Đơn Hàng Mới</p>
-                        <h3>128 Đơn</h3>
+                        <h3 id="totalOrders"></h3>
                     </div>
                     <div class="stat-icon">📦</div>
                 </div>
@@ -427,7 +460,7 @@
                 <div class="stat-card card-products">
                     <div class="stat-info">
                         <p>Tổng Sản Phẩm</p>
-                        <h3>450 Loại</h3>
+                        <h3 id="totalProducts"></h3>
                     </div>
                     <div class="stat-icon">🧸</div>
                 </div>
@@ -435,7 +468,7 @@
                 <div class="stat-card card-users">
                     <div class="stat-info">
                         <p>Thành Viên</p>
-                        <h3>1.024 User</h3>
+                        <h3 id="totalUsers">0</h3>
                     </div>
                     <div class="stat-icon">👥</div>
                 </div>
@@ -457,7 +490,7 @@
                         </tr>
                     </thead>
                     <tbody id="dashboard-order-body">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
 
@@ -467,16 +500,17 @@
     <div id="detail-modal" class="modal-overlay">
         <div class="modal-box">
             <h3>📋 Chi Tiết Hóa Đơn Mua Hàng</h3>
-            
-            <div class="detail-row"><span>Mã Đơn Hàng:</span><span id="dt-code" style="color:var(--active-color);"></span></div>
+
+            <div class="detail-row"><span>Mã Đơn Hàng:</span><span id="dt-code"
+                    style="color:var(--active-color);"></span></div>
             <div class="detail-row"><span>Khách Hàng:</span><span id="dt-customer"></span></div>
             <div class="detail-row"><span>Ngày Đặt Hàng:</span><span id="dt-date"></span></div>
             <div class="detail-row"><span>Trạng Thái Hệ Thống:</span><span id="dt-status"></span></div>
-            
+
             <div class="items-list-box">
                 <h4>🧱 Các sản phẩm đã mua:</h4>
                 <div id="dt-items-list">
-                    </div>
+                </div>
             </div>
 
             <div class="detail-row" style="margin-top: 20px; border-bottom: none;">
@@ -517,9 +551,9 @@
                 console.error("Lỗi lấy dữ liệu:", err);
             }
         }
-        
+
         function getStatusBadgeClass(status) {
-            switch(status) {
+            switch (status) {
                 case 'Chờ xử lý':
                 case 'Pending': return 'warning';
                 case 'Đang giao':
@@ -534,7 +568,7 @@
         }
 
         function getVietnameseStatus(status) {
-            switch(status) {
+            switch (status) {
                 case 'Pending': return 'Chờ xử lý';
                 case 'Processing':
                 case 'Shipped': return 'Đang giao';
@@ -548,9 +582,9 @@
         function renderDashboardOrders() {
             const tbody = document.getElementById('dashboard-order-body');
             let html = '';
-            
+
             const displayOrders = window.recentOrders ? window.recentOrders.slice(0, 5) : []; // Lấy 5 đơn mới nhất
-            
+
             displayOrders.forEach((order, index) => {
                 html += `
                     <tr>
@@ -576,10 +610,10 @@
                 document.getElementById('dt-date').innerText = order.date;
                 document.getElementById('dt-status').innerHTML = `<span class="status-badge ${getStatusBadgeClass(order.status)}">${order.status}</span>`;
                 document.getElementById('dt-total').innerText = Number(order.total).toLocaleString('vi-VN') + " đ";
-                
+
                 // Đổ dữ liệu danh sách sản phẩm mua cụ thể
                 let itemsHtml = '';
-                if(order.products && order.products.length > 0) {
+                if (order.products && order.products.length > 0) {
                     order.products.forEach(p => {
                         itemsHtml += `<div class="toy-item"><span>${p}</span></div>`;
                     });
@@ -587,7 +621,7 @@
                     itemsHtml = `<div class="toy-item" style="color:#999;">Không có chi tiết sản phẩm.</div>`;
                 }
                 document.getElementById('dt-items-list').innerHTML = itemsHtml;
-                
+
                 // Hiển thị Overlay Modal
                 document.getElementById('detail-modal').style.display = 'flex';
             }
@@ -603,7 +637,7 @@
         }
 
         // Chạy hàm fetch ngay khi tải trang xong
-        window.onload = function() {
+        window.onload = function () {
             fetchDashboardData();
         };
     </script>

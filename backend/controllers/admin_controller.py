@@ -19,15 +19,12 @@ def get_dashboard_stats():
 
     total_orders = G4Order.query.count()
     
-    # Doanh thu tháng hiện tại (loại bỏ đơn hủy)
+    # Chỉ tính tổng tiền của các đơn KHÔNG BỊ HỦY
     total_revenue = db.session.query(db.func.sum(G4Order.HKKM_Total_Amount)).filter(
-        db.and_(
-            G4Order.HKKM_Status != ORDER_STATUS_CANCELLED,
-            G4Order.HKKM_Created_At >= first_day
-        )
+        G4Order.HKKM_Status != ORDER_STATUS_CANCELLED
     ).scalar() or 0
     
-    total_users = G4User.query.filter_by(HKKM_Role=ROLE_CUSTOMER).count()
+    total_users = G4User.query.count()
     total_products = G4Product.query.count()
     
     return success_response("Stats fetched successfully", {
